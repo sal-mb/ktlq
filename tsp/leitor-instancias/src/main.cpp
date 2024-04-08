@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     // s.sequencia.push_back(1);
     // calcula_custoS(&s, &data);
 
-    for(int i = 1; i <= 10; i++){
+    for(int i = 1; i <= 30; i++){
         s.sequencia.push_back(i);
     }
     s.sequencia.push_back(1);
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 
     exibir_solucao(s_);
 
-    if(BISwap(s_, &data)){
+    if(BIOrOpt(s_, &data, 3)){
         exibir_solucao(s_);
     }
     return 0;

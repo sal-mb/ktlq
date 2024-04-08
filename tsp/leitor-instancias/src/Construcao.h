@@ -18,8 +18,6 @@ typedef struct Insercao{
 
 void exibir_custo_de_insercao(std::vector<Insercao> *custosInsercao);
 
-void ordena_custos(std::vector<Insercao> *custosInsercao);
-
 void inserir_em_s(Solucao *s, Solucao *resto, Insercao no);
 
 std::vector<Insercao> calcula_custo_insercao(Solucao *s, Solucao *resto, Data *dados);

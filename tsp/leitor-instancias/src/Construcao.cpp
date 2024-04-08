@@ -2,36 +2,13 @@
 #include "Solucao.h"
 #include <algorithm>
 
+bool ordena_por_custo(Insercao a, Insercao b){ return a.custoI < b.custoI; }
+
 void exibir_custo_de_insercao(std::vector<Insercao> *custosInsercao){
     for(auto insercao : *(custosInsercao)){
         std::cout << "no inserido: " << insercao.k_Inserido << " ; aresta removida: {" << insercao.a_Removida.x << ", " << insercao.a_Removida.y << "} ; custo: " << insercao.custoI << std::endl;
     }
     printf("\n");
-}
-
-void ordena_custos(std::vector<Insercao> *custosInsercao){
-
-  int i, j;
-  int swapped;
-
-  for(i = 0; i < custosInsercao->size()-1; i++){
-    swapped = 0;
-
-    for(j = 0; j < custosInsercao->size() - i -1;j++){
-
-      if(custosInsercao->at(j).custoI > custosInsercao->at(j+1).custoI){
-        Insercao aux = custosInsercao->at(j);
-        custosInsercao->at(j) = custosInsercao->at(j+1);
-        custosInsercao->at(j+1) = aux;
-        swapped = 1;
-      }
-
-    }
-
-    if(!(swapped)){
-      break;
-    }
-  }
 }
 
 Solucao* construcao(Solucao *s, Data *dados){
@@ -40,17 +17,16 @@ Solucao* construcao(Solucao *s, Data *dados){
     Solucao *resto = nosRestantes(s, s_);
 
     while(!resto->sequencia.empty()){
-        std::vector<Insercao> custosInsercoes = calcula_custo_insercao(s_, resto, dados);
+        std::vector<Insercao> custosInsercao = calcula_custo_insercao(s_, resto, dados);
 
-        ordena_custos(&custosInsercoes);
+        std::sort(custosInsercao.begin(), custosInsercao.end(), ordena_por_custo);
 
         double alpha = (double) rand() / RAND_MAX;
-        int selecionado = rand() % ((int) ceil(alpha * custosInsercoes.size()));
+        int selecionado = rand() % ((int) ceil(alpha * custosInsercao.size()));
 
-        inserir_em_s(s_, resto, custosInsercoes[selecionado]);
-
+        inserir_em_s(s_, resto, custosInsercao[selecionado]);
     }
-
+    
     calcula_custoS(s_, dados);
     return s_;
 }
