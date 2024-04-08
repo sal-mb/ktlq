@@ -2,6 +2,9 @@
 #include <iostream>
 #include <vector>
 #include "Solucao.h"
+#include "Construcao.h"
+#include "BuscaLocal.h"
+
 using namespace std;
 
 int main(int argc, char** argv) {
@@ -31,6 +34,10 @@ int main(int argc, char** argv) {
     Solucao *s_ = construcao(&s, &data);
 
     exibir_solucao(s_);
+
+    if(BIOrOpt(s_, &data, 1)){
+        exibir_solucao(s_);
+    }
     
     return 0;
 }
