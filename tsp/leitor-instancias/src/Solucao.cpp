@@ -19,7 +19,8 @@ void exibir_solucao(Solucao *s){
 }
 
 void calcula_custoS(Solucao *s, Data *dados){
-
+    s->custoS = 0;
+    
     for(int i = 0; i < s->sequencia.size() - 1; i++){
         s->custoS += dados->getDistance(s->sequencia[i], s->sequencia[i+1]);
     }

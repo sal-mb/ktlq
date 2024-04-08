@@ -6,6 +6,8 @@
 
 int BISwap(Solucao *s, Data *data);
 
+int BI2_Opt(Solucao *s, Data *data);
+
 int BIOrOpt(Solucao *s, Data *data, int option);
 
 #endif

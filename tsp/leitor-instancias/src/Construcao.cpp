@@ -1,4 +1,5 @@
 #include "Construcao.h"
+#include "Solucao.h"
 #include <algorithm>
 
 void exibir_custo_de_insercao(std::vector<Insercao> *custosInsercao){
@@ -47,19 +48,20 @@ Solucao* construcao(Solucao *s, Data *dados){
         int selecionado = rand() % ((int) ceil(alpha * custosInsercoes.size()));
 
         inserir_em_s(s_, resto, custosInsercoes[selecionado]);
+
     }
 
+    calcula_custoS(s_, dados);
     return s_;
 }
 
 void inserir_em_s(Solucao *s,  Solucao *resto, Insercao no){
 
+    s->sequencia.insert(std::find(s->sequencia.begin()+1, s->sequencia.end(), no.a_Removida.y), no.k_Inserido);
 
     resto->sequencia.erase(std::find(resto->sequencia.begin(), resto->sequencia.end(), no.k_Inserido));
 
-    s->sequencia.insert(std::find(s->sequencia.begin(), s->sequencia.end(), no.a_Removida.y), no.k_Inserido);
 }
-
 
 std::vector<Insercao> calcula_custo_insercao(Solucao *s, Solucao *resto, Data *dados){
     std::vector<Insercao> custosInsercao((s->sequencia.size() - 1) * resto->sequencia.size());

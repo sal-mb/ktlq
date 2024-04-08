@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
     //cout << "DistanceMatrix: " << endl;
     //data.printMatrixDist();
 
-    Solucao s;
+    Solucao s, s2;
 
     // cout << "Exemplo de Solucao s = ";
     // for (size_t i = 1; i <= n; i++) {
@@ -31,13 +31,13 @@ int main(int argc, char** argv) {
     }
     s.sequencia.push_back(1);
 
+
     Solucao *s_ = construcao(&s, &data);
 
     exibir_solucao(s_);
 
-    if(BIOrOpt(s_, &data, 1)){
+    if(BISwap(s_, &data)){
         exibir_solucao(s_);
     }
-    
     return 0;
 }
