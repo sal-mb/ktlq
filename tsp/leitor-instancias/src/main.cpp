@@ -1,15 +1,13 @@
 #include "Data.h"
-#include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <iostream>
 #include <vector>
 #include "Solucao.h"
-#include "Construcao.h"
 #include "BuscaLocal.h"
 
 using namespace std;
-
+Solucao* S_;
 Solucao* ILS( Solucao* s, Data *data, int maxIter, int maxIterIls);
 
 int main(int argc, char** argv) {
@@ -55,14 +53,15 @@ Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls){
                 //std::cout << "apos busca local: " << melhorAtual->custoS << std::endl;
                 iterILS = 0;
             }
+            iterILS++;
             delete s_;
             s_ = perturbacao(melhorAtual, data);
-            iterILS++;
         }
 
         if(s_->custoS < melhor->custoS){
             *melhor = *melhorAtual;
         }
+        delete s_;
         delete melhorAtual;
     }
 

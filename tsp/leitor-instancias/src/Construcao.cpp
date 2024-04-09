@@ -33,6 +33,7 @@ Solucao* construcao(Solucao *s, Data *dados){
     }
     
     calcula_custoS(s_, dados);
+    delete resto;
     return s_;
 }
 
