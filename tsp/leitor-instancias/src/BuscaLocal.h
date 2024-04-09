@@ -4,10 +4,13 @@
 #include "Solucao.h"
 #include "Data.h"
 
-int BISwap(Solucao *s, Data *data);
 
-int BI2_Opt(Solucao *s, Data *data);
+void BuscaLocal(Solucao *s, Data *data);
 
-int BIOrOpt(Solucao *s, Data *data, int option);
+bool BISwap(Solucao *s, Data *data);
+
+bool BI2_Opt(Solucao *s, Data *data);
+
+bool BIOrOpt(Solucao *s, Data *data, int option);
 
 #endif

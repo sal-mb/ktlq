@@ -2,8 +2,45 @@
 #include "Solucao.h"
 #include <algorithm>
 #include <utility>
+#include <chrono>
+#include <random>
 
-int BISwap(Solucao *s, Data *data){
+void BuscaLocal(Solucao *s, Data *data){
+
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::minstd_rand0 generator (seed);
+
+    std::vector<int> metodos = {0, 1, 2, 3, 4};
+    bool melhorou = false;
+
+    while(!metodos.empty()){
+        
+        int BI = generator() % metodos.size();
+
+        switch (metodos[BI]) {
+            
+            case 0:
+                melhorou = BISwap(s, data);
+                break;
+
+            case 1:
+                melhorou = BI2_Opt(s, data);
+                break;
+
+            default:
+                melhorou = BIOrOpt(s, data, BI-1);
+        }
+
+        if(melhorou){
+            metodos = {0, 1, 2, 3, 4};
+        }else{
+            metodos.erase(metodos.begin() + BI);
+        }
+    }
+}
+
+
+bool BISwap(Solucao *s, Data *data){
     
     double bestDelta = 0;
     int best_i =0, best_j =0;
@@ -45,18 +82,18 @@ int BISwap(Solucao *s, Data *data){
         std::swap(s->sequencia[best_i], s->sequencia[best_j]);
         
         s->custoS = s->custoS + bestDelta;
-        std::cout << s->custoS;
-        calcula_custoS(s, data);
-        std::cout << " = " << s->custoS << std::endl;
+        // std::cout << s->custoS;
+        // calcula_custoS(s, data);
+        // std::cout << " = " << s->custoS << std::endl;
 
-        return 1;
+        return true;
 
     }
     
-    return 0;
+    return false;
 }
 
-int BI2_Opt(Solucao *s, Data *data){
+bool BI2_Opt(Solucao *s, Data *data){
     double bestDelta = 0;
     int best_i =0, best_j =0;
 
@@ -83,17 +120,17 @@ int BI2_Opt(Solucao *s, Data *data){
         std::reverse(s->sequencia.begin()+(best_i), s->sequencia.begin()+(best_j));
         s->custoS += bestDelta;
 
-        std::cout << s->custoS;
-        calcula_custoS(s, data);
-        std::cout << " = " << s->custoS << std::endl;
-        return 1;
+        // std::cout << s->custoS;
+        // calcula_custoS(s, data);
+        // std::cout << " = " << s->custoS << std::endl;
+        return true;
     }
 
-    return 0;
+    return false;
 
 }
 
-int BIOrOpt(Solucao *s, Data *data, int option){
+bool BIOrOpt(Solucao *s, Data *data, int option){
     
     double bestDelta = 0;
     int best_i =0, best_j =0;
@@ -137,14 +174,14 @@ int BIOrOpt(Solucao *s, Data *data, int option){
 
             s->custoS += bestDelta;
 
-            std::cout << s->custoS;
-            calcula_custoS(s, data);
-            std::cout << " = " << s->custoS << std::endl;
-            return 1;
+            // std::cout << s->custoS;
+            // calcula_custoS(s, data);
+            // std::cout << " = " << s->custoS << std::endl;
+            return true;
 
         }
         
-        return 0;
+        return false;
 
     }else if(option == 2){
         int best_i2 =0;
@@ -181,24 +218,24 @@ int BIOrOpt(Solucao *s, Data *data, int option){
                 s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i]);
                 s->sequencia.erase(s->sequencia.begin()+best_i);
                 s->sequencia.erase(s->sequencia.begin()+best_i);
-                std::cout << " i < j" << std::endl;
+                // std::cout << " i < j" << std::endl;
             }else{
                 s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i2]);
                 s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i2]);
                 s->sequencia.erase(s->sequencia.begin()+best_i+2);
                 s->sequencia.erase(s->sequencia.begin()+best_i+2);
-                std::cout << " i > j" << std::endl; 
+                // std::cout << " i > j" << std::endl;
 
             }
             s->custoS += bestDelta;
 
-            std::cout << s->custoS;
-            calcula_custoS(s, data);
-            std::cout << " = " << s->custoS << std::endl;
-            return 1;
+            // std::cout << s->custoS;
+            // calcula_custoS(s, data);
+            // std::cout << " = " << s->custoS << std::endl;
+            return true;
         }
         
-        return 0;
+        return false;
 
     }else if(option == 3){
         
@@ -240,7 +277,7 @@ int BIOrOpt(Solucao *s, Data *data, int option){
                 s->sequencia.erase(s->sequencia.begin()+best_i);
                 s->sequencia.erase(s->sequencia.begin()+best_i);
                 s->sequencia.erase(s->sequencia.begin()+best_i);
-                std::cout << " i < j" << std::endl;
+                // std::cout << " i < j" << std::endl;
             }else{
 
                 s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i3]);
@@ -249,18 +286,18 @@ int BIOrOpt(Solucao *s, Data *data, int option){
                 s->sequencia.erase(s->sequencia.begin()+best_i+3);
                 s->sequencia.erase(s->sequencia.begin()+best_i+3);
                 s->sequencia.erase(s->sequencia.begin()+best_i+3);
-                std::cout << " i > j" << std::endl; 
+                // std::cout << " i > j" << std::endl;
 
             }
             s->custoS += bestDelta;
 
-            std::cout << s->custoS;
-            calcula_custoS(s, data);
-            std::cout << " = " << s->custoS << std::endl;
-            return 1;
+            // std::cout << s->custoS;
+            // calcula_custoS(s, data);
+            // std::cout << " = " << s->custoS << std::endl;
+            return true;
         }
         
-        return 0;
+        return false;
     }
-    return 0;
+    return false;
 }

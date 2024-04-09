@@ -66,3 +66,62 @@ Solucao* nosRestantes(Solucao *s, Solucao *gerada){
 
     return resto;
 }
+
+Solucao* perturbacao(Solucao *s, Data *data){
+
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::minstd_rand0 generator (seed);
+
+    Solucao *perturbada = new Solucao;
+    *perturbada = *s;
+
+    std::vector<int> bloco1, bloco2;
+    int size_b1, size_b2;
+
+    size_b1 = generator() % (perturbada->sequencia.size()/10) + 2;
+    size_b2 = generator() % (perturbada->sequencia.size()/10) + 2;
+
+    bloco1.reserve(size_b1);
+    bloco2.reserve(size_b2);
+
+
+    int posicao_b1, posicao_b2;
+
+    posicao_b1 = (generator() % (perturbada->sequencia.size() - (size_b1+1))) + 1;
+
+    posicao_b2 = (generator() % (perturbada->sequencia.size() - (size_b2+1))) + 1;
+
+    while(posicao_b2 <= posicao_b1+size_b1 && posicao_b1 <= posicao_b2+size_b2){
+        posicao_b2 = (generator() % (perturbada->sequencia.size() - (size_b2+1))) + 1;
+    }
+
+    // std::cout << "[b1] posicao: " << posicao_b1 << ", tamanho: " << size_b1 << std::endl; 
+    // std::cout << "[b2] posicao: " << posicao_b2 << ", tamanho: " << size_b2 << std::endl; 
+    
+
+    for(int i = 0; i < size_b1; i++){
+        bloco1.push_back(perturbada->sequencia[posicao_b1+i]);
+    }
+    for(int i = 0; i < size_b2; i++){
+        bloco2.push_back(perturbada->sequencia[posicao_b2+i]);
+    }
+    
+
+    if(posicao_b1 > posicao_b2){
+
+        perturbada->sequencia.erase(perturbada->sequencia.begin()+posicao_b1, perturbada->sequencia.begin()+posicao_b1+size_b1);
+        perturbada->sequencia.insert(perturbada->sequencia.begin()+posicao_b1, bloco2.begin(), bloco2.end());
+        perturbada->sequencia.erase(perturbada->sequencia.begin()+posicao_b2, perturbada->sequencia.begin()+posicao_b2+size_b2);
+        perturbada->sequencia.insert(perturbada->sequencia.begin()+posicao_b2, bloco1.begin(), bloco1.end());
+    }else{
+
+        perturbada->sequencia.erase(perturbada->sequencia.begin()+posicao_b2, perturbada->sequencia.begin()+posicao_b2+size_b2);
+        perturbada->sequencia.insert(perturbada->sequencia.begin()+posicao_b2, bloco1.begin(), bloco1.end());
+        perturbada->sequencia.erase(perturbada->sequencia.begin()+posicao_b1, perturbada->sequencia.begin()+posicao_b1+size_b1);
+        perturbada->sequencia.insert(perturbada->sequencia.begin()+posicao_b1, bloco2.begin(), bloco2.end());
+    }
+    
+    calcula_custoS(perturbada, data);
+    return perturbada;
+
+}

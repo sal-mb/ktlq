@@ -1,6 +1,8 @@
 #include "Construcao.h"
 #include "Solucao.h"
 #include <algorithm>
+#include <chrono>
+#include <random>
 
 bool ordena_por_custo(Insercao a, Insercao b){ return a.custoI < b.custoI; }
 
@@ -13,6 +15,9 @@ void exibir_custo_de_insercao(std::vector<Insercao> *custosInsercao){
 
 Solucao* construcao(Solucao *s, Data *dados){
 
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::minstd_rand0 generator (seed);
+
     Solucao *s_ = gera_S_aletaoria(s);
     Solucao *resto = nosRestantes(s, s_);
 
@@ -21,8 +26,8 @@ Solucao* construcao(Solucao *s, Data *dados){
 
         std::sort(custosInsercao.begin(), custosInsercao.end(), ordena_por_custo);
 
-        double alpha = (double) rand() / RAND_MAX;
-        int selecionado = rand() % ((int) ceil(alpha * custosInsercao.size()));
+        double alpha = (double) generator() / RAND_MAX;
+        int selecionado = generator() % ((int) ceil(alpha * custosInsercao.size()));
 
         inserir_em_s(s_, resto, custosInsercao[selecionado]);
     }

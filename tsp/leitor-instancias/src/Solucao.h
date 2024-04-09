@@ -20,6 +20,6 @@ Solucao* gera_S_aletaoria(Solucao *s);
 
 Solucao* nosRestantes(Solucao *s, Solucao *gerada);
 
-
+Solucao* perturbacao(Solucao *s, Data *data);
 
 #endif
