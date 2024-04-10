@@ -19,30 +19,32 @@ int main(int argc, char** argv) {
     data.read();
     size_t n = data.getDimension();
 
-    cout << "Dimension: " << n << endl;
-
     time_t t;
-
     srand(time(&t) + n);
 
     Solucao s;
-
+    double sumCost = 0;
     for(int i = 1; i <= n; i++){
         s.sequencia.push_back(i);
     }
     s.sequencia.push_back(1);
+
     
     auto start = chrono::high_resolution_clock::now();
+    
+    for(int i = 0; i < 10; i++){
 
-    Solucao *s_ = ILS(&s, &data, 50, n > 150 ? n/2 : n);
+        Solucao *s_ = ILS(&s, &data, 50, n > 150 ? n/2 : n);
+        sumCost += s_->custoS;
+        delete s_;
+
+    }
     
     auto stop = chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-
-    exibir_solucao(s_);
-
-    std::cout << "Tempo de execução: " << duration.count() << "s" << std::endl;
-    delete s_;
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    
+    std::cout << data.getInstanceName();
+    printf(" - %.3lf %.1lf\n", (double)(duration.count())/10000, sumCost/10);
 
     return 0;
 }
