@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <utility>
 
+#define EPSILON 0.0005
+
 void BuscaLocal(Solucao *s, Data *data){
 
     std::vector<int> metodos = {0, 1, 2, 3, 4};
@@ -73,7 +75,7 @@ bool BISwap(Solucao *s, Data *data){
         }
     }
 
-    if(bestDelta < 0){
+    if(bestDelta + EPSILON < 0){
         std::swap(s->sequencia[best_i], s->sequencia[best_j]);
         
         s->custoS = s->custoS + bestDelta;
@@ -110,7 +112,7 @@ bool BI2_Opt(Solucao *s, Data *data){
         }
     }
 
-    if(bestDelta < 0){
+    if(bestDelta + EPSILON < 0){
            
         std::reverse(s->sequencia.begin()+(best_i), s->sequencia.begin()+(best_j));
         s->custoS += bestDelta;
@@ -155,7 +157,7 @@ bool BIOrOpt(Solucao *s, Data *data, int option){
             }
         }
 
-        if(bestDelta < 0){
+        if(bestDelta + EPSILON < 0){
             if(best_j > best_i){
                 s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i]);
                 s->sequencia.erase(s->sequencia.begin()+best_i);
@@ -205,7 +207,7 @@ bool BIOrOpt(Solucao *s, Data *data, int option){
             }
         }
 
-        if(bestDelta < 0){
+        if(bestDelta + EPSILON < 0){
         
             if (best_i < best_j) {
                 s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i2]);
@@ -262,7 +264,7 @@ bool BIOrOpt(Solucao *s, Data *data, int option){
             }
         }
 
-        if(bestDelta < 0){
+        if(bestDelta + EPSILON < 0){
             
             if (best_i < best_j) {
                 s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i3]);

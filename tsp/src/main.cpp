@@ -9,6 +9,8 @@
 #include <time.h>
 #include <chrono>
 
+#define EPSILON 0.0005
+
 using namespace std;
 Solucao* S_;
 Solucao* ILS( Solucao* s, Data *data, int maxIter, int maxIterIls);
@@ -64,7 +66,7 @@ Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls){
 
         while(iterILS <= maxIterIls){
             BuscaLocal(s_, data);
-            if(s_->custoS < melhorAtual->custoS){
+            if(s_->custoS + EPSILON < melhorAtual->custoS){
                 //delete melhorAtual;
                 *melhorAtual = *s_;
                 //std::cout << "apos busca local: " << melhorAtual->custoS << std::endl;
@@ -75,7 +77,7 @@ Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls){
             s_ = perturbacao(melhorAtual, data);
         }
 
-        if(melhorAtual->custoS < melhor->custoS){
+        if(melhorAtual->custoS + EPSILON < melhor->custoS){
             *melhor = *melhorAtual;
         }
         delete s_;
