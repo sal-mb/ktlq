@@ -22,9 +22,8 @@ int main(int argc, char** argv) {
     data.read();
     size_t n = data.getDimension();
 
-    // time_t t;
-    // srand(time(&t) + n);
-    // double sumCost = 0;
+    time_t t;
+    srand(time(&t) + n);
 
     Solucao s;
     for(int i = 1; i <= 9; i++){
@@ -32,14 +31,18 @@ int main(int argc, char** argv) {
     }
     s.sequencia.push_back(1);
 
-    vector<vector<Subsequencia>> matrizSubSeq(10, vector<Subsequencia> (10));
-    vector<vector<Subsequencia>> matrizSubSeqInv(10, vector<Subsequencia> (10));
+    vector<vector<Subsequencia>> subSeqMatrix(10, vector<Subsequencia> (10));
+    Solucao *s_ = construcao(&s, &data);
+    exibir_solucao(s_, &data);
 
-    attMatrizSubSeq(&s, matrizSubSeq, &data);
-    attMatrizSubSeqInv(&s, matrizSubSeqInv, &data);
+    attMatrizSubSeq(s_, subSeqMatrix, &data);
 
-    exibir_matrizSubSeq(matrizSubSeq, &s);
-    exibir_matrizSubSeq(matrizSubSeqInv, &s);
+    if(BIOrOpt(s_, &data, 3, subSeqMatrix)){
+        
+    }
+
+    exibir_solucao(s_, &data);
+    
     // auto start = chrono::high_resolution_clock::now();
     
     // auto stop = chrono::high_resolution_clock::now();
@@ -52,7 +55,7 @@ int main(int argc, char** argv) {
 }
 
 
-Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls){
+Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls, std::vector<std::vector<Subsequencia>> &subSeqMatrix){
 
     Solucao *melhor = new Solucao;
     melhor->custoS = INFINITY;
@@ -65,7 +68,7 @@ Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls){
         int iterILS = 0;
 
         while(iterILS <= maxIterIls){
-            BuscaLocal(s_, data);
+            BuscaLocal(s_, data, subSeqMatrix);
             if(s_->custoS + EPSILON < melhorAtual->custoS){
                 //delete melhorAtual;
                 *melhorAtual = *s_;

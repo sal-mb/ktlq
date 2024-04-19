@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <vector>
 
-void exibir_solucao(Solucao *s){
+void exibir_solucao(Solucao *s, Data *dados){
 
     std::cout << "Solução: " << std::endl;
     for(int i = 0; i < s->sequencia.size() - 1; i++){
@@ -13,6 +13,16 @@ void exibir_solucao(Solucao *s){
 
     if(s->custoS != 0){
         std::cout << "CustoS: " << s->custoS << std::endl;
+    }else{
+        calcula_custoS(s, dados);
+        std::cout << "CustoS: " << s->custoS << std::endl;
+    }
+
+    if(s->custoA != 0){
+        std::cout << "CustoA: " << s->custoA << std::endl;
+    }else{
+        calcula_custoA(s, dados);
+        std::cout << "CustoA: " << s->custoA << std::endl;
     }
 }
 
@@ -21,6 +31,18 @@ void calcula_custoS(Solucao *s, Data *dados){
     
     for(int i = 0; i < s->sequencia.size() - 1; i++){
         s->custoS += dados->getDistance(s->sequencia[i], s->sequencia[i+1]);
+    }
+
+}
+
+
+void calcula_custoA(Solucao *s, Data *dados){
+    s->custoA = 0;
+    
+    for(int i = 0; i < s->sequencia.size(); i++){
+        for(int j = 0; j < i; j++){
+            s->custoA += dados->getDistance(s->sequencia[j], s->sequencia[j+1]);
+        }
     }
 
 }

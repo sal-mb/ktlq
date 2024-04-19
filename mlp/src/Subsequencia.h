@@ -14,7 +14,7 @@ void exibir_subSeq(Subsequencia &subseq, Solucao *s);
 
 void exibir_matrizSubSeq(std::vector<std::vector<Subsequencia>> &subSeqMatrix, Solucao *s);
 
-Subsequencia Concatena(Subsequencia &sg_1, Subsequencia &sg_2, Data *data);
+Subsequencia Concatena(Subsequencia &sg_1, Subsequencia &sg_2, Data *data, Solucao *s);
 
 void attMatrizSubSeq(Solucao *s, std::vector<std::vector<Subsequencia>> &subSeqMatrix, Data *data);
 

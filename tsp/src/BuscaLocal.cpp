@@ -131,22 +131,24 @@ bool BIOrOpt(Solucao *s, Data *data, int option){
     
     double bestDelta = 0;
     int best_i =0, best_j =0;
+    int n = s->sequencia.size();
 
-    if(option == 1){
+        for(int i = 1; i < n-option; i++){
 
-        for(int i = 1; i < s->sequencia.size()-1; i++){
-            int a = s->sequencia[i];
-            int a_next = s->sequencia[i+1];
             int a_prev = s->sequencia[i-1];
+            int a_begin = s->sequencia[i];
+            int a_end = s->sequencia[i+option-1];
+            int a_next = s->sequencia[i+option];
 
-            for(int j = 1; j < s->sequencia.size(); j++){
+            for(int j = 1; j < n; j++){
+
                 int b_prev = s->sequencia[j-1];
                 int b = s->sequencia[j];
 
-                if(i == j-1 || i == j){continue;}
+                if((j+option-1) >= i && i >= (j-option)){continue;}
 
-                double delta = -data->getDistance(a, a_prev) -data->getDistance(a, a_next) +data->getDistance(a_next, a_prev) -data->getDistance(b, b_prev)  
-                +data->getDistance(b, a) + data->getDistance(a, b_prev);
+                double delta = -data->getDistance(a_prev, a_begin) -data->getDistance(a_end, a_next) -data->getDistance(b_prev, b)
+                +data->getDistance(a_prev, a_next) +data->getDistance(b_prev, a_begin) +data->getDistance(a_end, b);
 
                 if(delta < bestDelta){
                     bestDelta = delta;
@@ -158,142 +160,27 @@ bool BIOrOpt(Solucao *s, Data *data, int option){
         }
 
         if(bestDelta + EPSILON < 0){
+            // std::cout << "i: " << best_i << " j: " << best_j << std::endl;
+            // std::cout << "element i: " << s->sequencia[best_i] << " element j: " << s->sequencia[best_j] << std::endl;
+
+            Solucao s_ = *s;
+
+            s->sequencia.insert(s->sequencia.begin()+best_j, s_.sequencia.begin()+best_i, s_.sequencia.begin()+best_i+option);
+
             if(best_j > best_i){
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i]);
-                s->sequencia.erase(s->sequencia.begin()+best_i);
-
+                s->sequencia.erase(s->sequencia.begin()+best_i, s->sequencia.begin()+best_i+option);
             }else{
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i]);
-                s->sequencia.erase(s->sequencia.begin()+best_i+1);
+                s->sequencia.erase(s->sequencia.begin()+best_i+option, s->sequencia.begin()+best_i+option+option);
             }
-
 
             s->custoS += bestDelta;
 
             // std::cout << s->custoS;
             // calcula_custoS(s, data);
             // std::cout << " = " << s->custoS << std::endl;
-            return true;
 
-        }
-        
-        return false;
-
-    }else if(option == 2){
-        int best_i2 =0;
-
-        for(int i = 1; i < s->sequencia.size()-2; i++){
-            int a_prev = s->sequencia[i-1];
-            int a = s->sequencia[i];
-            int a2 = s->sequencia[i+1];
-            int a2_next = s->sequencia[i+2];
-
-            for(int j = 1; j < s->sequencia.size(); j++){
-                int b_prev = s->sequencia[j-1];
-                int b = s->sequencia[j];
-
-                if(i == j || i == j - 1 || i == j - 2 || i == j + 1){continue;}
-
-                double delta = -data->getDistance(a_prev, a) - data->getDistance(a2_next, a2) - data->getDistance(b_prev, b) 
-                + data->getDistance(b_prev, a) + data->getDistance(b, a2) + data->getDistance(a_prev, a2_next);
-
-                if(delta < bestDelta){
-                    bestDelta = delta;
-
-                    best_i = i;
-                    best_i2 = i+1;
-                    best_j = j;
-                }
-            }
-        }
-
-        if(bestDelta + EPSILON < 0){
-        
-            if (best_i < best_j) {
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i2]);
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i]);
-                s->sequencia.erase(s->sequencia.begin()+best_i);
-                s->sequencia.erase(s->sequencia.begin()+best_i);
-                // std::cout << " i < j" << std::endl;
-            }else{
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i2]);
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i2]);
-                s->sequencia.erase(s->sequencia.begin()+best_i+2);
-                s->sequencia.erase(s->sequencia.begin()+best_i+2);
-                // std::cout << " i > j" << std::endl;
-
-            }
-            s->custoS += bestDelta;
-
-            // std::cout << s->custoS;
-            // calcula_custoS(s, data);
-            // std::cout << " = " << s->custoS << std::endl;
             return true;
         }
         
-        return false;
-
-    }else if(option == 3){
-        
-        int best_i2 =0, best_i3 =0;
-
-        for(int i = 1; i < s->sequencia.size()-3; i++){
-            int a_prev = s->sequencia[i-1];
-            int a = s->sequencia[i];
-            int a2 = s->sequencia[i+1];
-            int a3 = s->sequencia[i+2];
-            int a3_next = s->sequencia[i+3];
-
-            for(int j = 1; j < s->sequencia.size(); j++){
-                int b_prev = s->sequencia[j-1];
-                int b = s->sequencia[j];
-
-                if(i == j || i == j - 1 || i == j - 2 || i == j - 3 || i == j + 1 || i == j + 2){continue;}
-
-                double delta = -data->getDistance(a_prev, a) - data->getDistance(a3_next, a3) - data->getDistance(b_prev, b) 
-                + data->getDistance(b_prev, a) + data->getDistance(b, a3) + data->getDistance(a_prev, a3_next);
-
-                if(delta < bestDelta){
-                    bestDelta = delta;
-
-                    best_i = i;
-                    best_i2 = i+1;
-                    best_i3 = i+2;
-                    best_j = j;
-                }
-            }
-        }
-
-        if(bestDelta + EPSILON < 0){
-            
-            if (best_i < best_j) {
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i3]);
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i2]);
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i]);
-                s->sequencia.erase(s->sequencia.begin()+best_i);
-                s->sequencia.erase(s->sequencia.begin()+best_i);
-                s->sequencia.erase(s->sequencia.begin()+best_i);
-                // std::cout << " i < j" << std::endl;
-            }else{
-
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i3]);
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i3]);
-                s->sequencia.insert(s->sequencia.begin()+best_j, s->sequencia[best_i3]);
-                s->sequencia.erase(s->sequencia.begin()+best_i+3);
-                s->sequencia.erase(s->sequencia.begin()+best_i+3);
-                s->sequencia.erase(s->sequencia.begin()+best_i+3);
-                // std::cout << " i > j" << std::endl;
-
-            }
-            s->custoS += bestDelta;
-
-            // std::cout << s->custoS;
-            // calcula_custoS(s, data);
-            // std::cout << " = " << s->custoS << std::endl;
-            return true;
-        }
-        
-        return false;
-    }
     return false;
 }

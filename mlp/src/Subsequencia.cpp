@@ -12,19 +12,17 @@ void exibir_subSeq(Subsequencia &subseq, Solucao *s){
         return;
     }
 
-    if(subseq.ultimo_pos > subseq.primeiro_pos){
+    if(subseq.primeiro_pos < subseq.ultimo_pos){
         std::cout<< "Subsequencia: ";
         for(int i = subseq.primeiro_pos; i < subseq.ultimo_pos; i++){
             std::cout<< s->sequencia[i] << " -> ";
         }
-
     }else{
         std::cout<< "Subsequencia: ";
-        for(int i = subseq.primeiro_pos; i >= subseq.ultimo_pos; i--){
+        for(int i = subseq.primeiro_pos; i > subseq.ultimo_pos; i--){
             std::cout<< s->sequencia[i] << " -> ";
         }
     }
-
     std::cout<< s->sequencia[subseq.ultimo_pos] << std::endl;
     std::cout << "W: " << subseq.W <<", T: " << subseq.T << ", C: " << subseq.C  << "\n" << std::endl;
 
@@ -34,7 +32,7 @@ void exibir_matrizSubSeq(std::vector<std::vector<Subsequencia>> &subSeqMatrix, S
     int n = s->sequencia.size();
 
     for(int i = 0; i < n; i++){
-        for(int j = i; j < n; j++){
+        for(int j = 0; j < n; j++){
             printf("[%d] [%d]", i, j);
             exibir_subSeq(subSeqMatrix[i][j], s);
         }
@@ -67,32 +65,43 @@ void attMatrizSubSeq(Solucao *s, std::vector<std::vector<Subsequencia>> &subSeqM
         subSeqMatrix[i][i].ultimo_pos = i;
     }
 
-    for(int i = 0; i < n-1; i++){
+    for(int i = 0; i < n; i++){
         for(int j = i+1; j < n; j++){
             subSeqMatrix[i][j] = Concatena(subSeqMatrix[i][j-1], subSeqMatrix[j][j], data, s);        
         }
     }
-    subSeqMatrix[0][0].W = 0;
-    subSeqMatrix[n-1][n-1].W = 0;
-}
 
-void attMatrizSubSeqInv(Solucao *s, std::vector<std::vector<Subsequencia>> &subSeqMatrix,Data *data){
-    
-    int n = s->sequencia.size();
-
-     for(int i = 0; i < n; i++){
-        subSeqMatrix[i][i].W = 1;
-        subSeqMatrix[i][i].C = 0;
-        subSeqMatrix[i][i].T = 0;
-        subSeqMatrix[i][i].primeiro_pos = i;
-        subSeqMatrix[i][i].ultimo_pos = i;
-    }
-
-    for(int i = n-1; i >=0; i--){
-        for(int j = i-1; j > 0; j--){
-            subSeqMatrix[i][j] = Concatena(subSeqMatrix[i][j+1], subSeqMatrix[j][j], data, s);        
+    for (int i = n - 1; i >= 0; i--){
+        for(int j = i - 1; j >= 0; j--){
+            subSeqMatrix[i][j] = Concatena(subSeqMatrix[i][j+1], subSeqMatrix[j][j], data, s);
         }
     }
-    subSeqMatrix[0][0].W = 0;
-    subSeqMatrix[n-1][n-1].W = 0;
+    // subSeqMatrix[0][0].W = 0;
+    // subSeqMatrix[n-1][n-1].W = 0;
 }
+
+// void attMatrizSubSeqInv(Solucao *s, std::vector<std::vector<Subsequencia>> &subSeqMatrix,Data *data){
+    
+//     int n = s->sequencia.size();
+
+//      for(int i = 0; i < n; i++){
+//         subSeqMatrix[i][i].W = 1;
+//         subSeqMatrix[i][i].C = 0;
+//         subSeqMatrix[i][i].T = 0;
+//         subSeqMatrix[i][i].primeiro_pos = (n-1)-i;
+//         subSeqMatrix[i][i].ultimo_pos = (n-1)-i;
+//     }
+
+//     // for(int i = n-1; i >=0; i--){
+//     //     for(int j = i-1; j > 0; j--){
+//     //         subSeqMatrix[i][j] = Concatena(subSeqMatrix[i][j+1], subSeqMatrix[j][j], data, s);        
+//     //     }
+//     // }
+//     for(int i = 0; i < n-1; i++){
+//         for(int j = i+1; j < n; j++){
+//             subSeqMatrix[i][j] = Concatena(subSeqMatrix[i][j-1], subSeqMatrix[j][j], data, s);        
+//         }
+//     }
+//     subSeqMatrix[0][0].W = 0;
+//     subSeqMatrix[n-1][n-1].W = 0;
+// }
