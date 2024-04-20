@@ -136,7 +136,7 @@ Solucao* perturbacao(Solucao *s, Data *data){
         perturbada->sequencia.insert(perturbada->sequencia.begin()+posicao_b1, bloco2.begin(), bloco2.end());
     }
     
-    calcula_custoS(perturbada, data);
+    calcula_custoA(perturbada, data);
     return perturbada;
 
 }

@@ -26,7 +26,7 @@ void BuscaLocal(Solucao *s, Data *data, std::vector<std::vector<Subsequencia>> &
                 break;
 
             default:
-                melhorou = BIOrOpt(s, data, BI-1, subSeqMatrix);
+                melhorou = BIOrOpt(s, data, metodos[BI]-1, subSeqMatrix);
         }
 
         if(melhorou){
@@ -51,13 +51,15 @@ bool BISwap(Solucao *s, Data *data, std::vector<std::vector<Subsequencia>> &subS
         Subsequencia prev_i = subSeqMatrix[0][i-1];
 
         for(int j = i+1; j < n-1; j++){
-        
+            
+            // std::cout << "busca local 1" << std::endl;
+
             Subsequencia prev_j = subSeqMatrix[i+1][j-1];
             Subsequencia subseq_j = subSeqMatrix[j][j];
             Subsequencia next_j = subSeqMatrix[j+1][n-1];
 
             if(j == i+1){
-
+                
                 result = Concatena(prev_i, subseq_j, data, s);
                 result = Concatena(result, subseq_i, data, s);
                 result = Concatena(result, next_j, data, s);
@@ -89,6 +91,8 @@ bool BISwap(Solucao *s, Data *data, std::vector<std::vector<Subsequencia>> &subS
         // calcula_custoA(s, data);
         // std::cout << " = " << s->custoA << std::endl;
 
+        attMatrizSubSeq(s, subSeqMatrix, data);
+
         return true;
 
     }
@@ -107,10 +111,12 @@ bool BI2_Opt(Solucao *s, Data *data, std::vector<std::vector<Subsequencia>> &sub
         Subsequencia subseq_i = subSeqMatrix[0][i];
 
         for(int j = i+2; j < n-1; j++){
+            
+            // std::cout << "busca local 2" << std::endl;
 
             Subsequencia inv = subSeqMatrix[j][i+1];
             Subsequencia next_j = subSeqMatrix[j+1][n-1];
-
+            
             result = Concatena(subseq_i, inv, data, s);
             result = Concatena(result, next_j, data, s);
 
@@ -132,7 +138,11 @@ bool BI2_Opt(Solucao *s, Data *data, std::vector<std::vector<Subsequencia>> &sub
         // std::cout << s->custoA;
         // calcula_custoA(s, data);
         // std::cout << " = " << s->custoA << std::endl;
-        // return true;
+
+        attMatrizSubSeq(s, subSeqMatrix, data);
+
+        return true;
+
     }
 
     return false;
@@ -145,7 +155,7 @@ bool BIOrOpt(Solucao *s, Data *data, int option, std::vector<std::vector<Subsequ
     int best_i =0, best_j =0;
     int n = s->sequencia.size();
     Subsequencia result;
-    Subsequencia best;
+    
 
         for(int i = 1; i < n-option; i++){
             Subsequencia prev_i = subSeqMatrix[0][i-1];
@@ -154,8 +164,9 @@ bool BIOrOpt(Solucao *s, Data *data, int option, std::vector<std::vector<Subsequ
 
             for(int j = 1; j < n; j++){
 
-                if((j+option-1) >= i && i >= (j-option)){continue;}
+                if((j+option-1) >= i && i >= (j-option)){ continue; }
 
+                //std::cout << "busca local 3, i: " << i << " j: " << j << ", option: " <<<< std::endl;
                 if(i < j){
                     
                     Subsequencia i_to_j = subSeqMatrix[i+option][j-1];
@@ -181,12 +192,11 @@ bool BIOrOpt(Solucao *s, Data *data, int option, std::vector<std::vector<Subsequ
                     bestDelta = delta;
                     best_i = i;
                     best_j = j;
-                    best = result;
                 }
 
             }
         }
-        exibir_subSeq(best, s);
+        
 
         if(bestDelta + EPSILON < 0){
             // std::cout << "i: " << best_i << " j: " << best_j << std::endl;
@@ -204,9 +214,12 @@ bool BIOrOpt(Solucao *s, Data *data, int option, std::vector<std::vector<Subsequ
 
             s->custoA += bestDelta;
 
-            std::cout << s->custoA;
-            calcula_custoA(s, data);
-            std::cout << " = " << s->custoA << std::endl;
+            // std::cout << s->custoA;
+            // calcula_custoA(s, data);
+            // std::cout << " = " << s->custoA << std::endl;
+
+            attMatrizSubSeq(s, subSeqMatrix, data);
+
             return true;
 
         }

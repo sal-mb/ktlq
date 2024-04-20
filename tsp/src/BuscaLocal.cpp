@@ -25,7 +25,7 @@ void BuscaLocal(Solucao *s, Data *data){
                 break;
 
             default:
-                melhorou = BIOrOpt(s, data, BI-1);
+                melhorou = BIOrOpt(s, data, metodos[BI]-1);
         }
 
         if(melhorou){

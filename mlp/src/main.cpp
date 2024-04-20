@@ -14,7 +14,7 @@
 
 using namespace std;
 
-Solucao* ILS( Solucao* s, Data *data, int maxIter, int maxIterIls);
+Solucao* ILS( Solucao* s, Data *data, int maxIter, int maxIterIls, std::vector<std::vector<Subsequencia>> &subSeqMatrix);
 
 int main(int argc, char** argv) {
 
@@ -26,30 +26,16 @@ int main(int argc, char** argv) {
     srand(time(&t) + n);
 
     Solucao s;
-    for(int i = 1; i <= 9; i++){
+    for(int i = 1; i <= n; i++){
         s.sequencia.push_back(i);
     }
     s.sequencia.push_back(1);
 
-    vector<vector<Subsequencia>> subSeqMatrix(10, vector<Subsequencia> (10));
-    Solucao *s_ = construcao(&s, &data);
-    exibir_solucao(s_, &data);
+    vector<vector<Subsequencia>> subSeqMatrix(n+1, vector<Subsequencia> (n+1));
 
-    attMatrizSubSeq(s_, subSeqMatrix, &data);
-
-    if(BIOrOpt(s_, &data, 3, subSeqMatrix)){
-        
-    }
+    Solucao *s_ = ILS(&s, &data, 50, n > 150 ? n/2 : n, subSeqMatrix);
 
     exibir_solucao(s_, &data);
-    
-    // auto start = chrono::high_resolution_clock::now();
-    
-    // auto stop = chrono::high_resolution_clock::now();
-    // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    
-    // std::cout << data.getInstanceName();
-    // printf(" - %.3lf %.1lf\n", (double)(duration.count())/10000, sumCost/10);
 
     return 0;
 }
@@ -58,7 +44,7 @@ int main(int argc, char** argv) {
 Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls, std::vector<std::vector<Subsequencia>> &subSeqMatrix){
 
     Solucao *melhor = new Solucao;
-    melhor->custoS = INFINITY;
+    melhor->custoA = INFINITY;
     
     for(int i = 0; i <= maxIter; i++){
 
@@ -67,20 +53,26 @@ Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls, std::vector<st
         *melhorAtual = *s_;
         int iterILS = 0;
 
+        attMatrizSubSeq(s_, subSeqMatrix, data);
+
         while(iterILS <= maxIterIls){
             BuscaLocal(s_, data, subSeqMatrix);
-            if(s_->custoS + EPSILON < melhorAtual->custoS){
+
+            if(s_->custoA + EPSILON < melhorAtual->custoA){
                 //delete melhorAtual;
                 *melhorAtual = *s_;
                 //std::cout << "apos busca local: " << melhorAtual->custoS << std::endl;
                 iterILS = 0;
             }
+
             iterILS++;
             delete s_;
+
             s_ = perturbacao(melhorAtual, data);
+            attMatrizSubSeq(s_, subSeqMatrix, data);
         }
 
-        if(melhorAtual->custoS + EPSILON < melhor->custoS){
+        if(melhorAtual->custoA + EPSILON < melhor->custoA){
             *melhor = *melhorAtual;
         }
         delete s_;

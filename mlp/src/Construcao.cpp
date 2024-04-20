@@ -26,7 +26,7 @@ Solucao* construcao(Solucao *s, Data *dados){
         inserir_em_s(s_, resto, custosInsercao[selecionado]);
     }
     
-    calcula_custoS(s_, dados);
+    calcula_custoA(s_, dados);
     delete resto;
     return s_;
 }
