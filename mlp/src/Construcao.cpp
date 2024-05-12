@@ -1,65 +1,68 @@
 #include "Construcao.h"
+#include "Data.h"
 #include "Solucao.h"
+#include "Subsequencia.h"
 #include <algorithm>
+#include <cstdlib>
 
-bool ordena_por_custo(Insercao a, Insercao b){ return a.custoI < b.custoI; }
+bool ordena_por_custo(Insercao a, Insercao b){ return a.custo < b.custo; }
 
-void exibir_custo_de_insercao(std::vector<Insercao> *custosInsercao, Solucao *s){
-    for(auto insercao : *(custosInsercao)){
-        std::cout << "no inserido: " << insercao.k_Inserido << " ; aresta removida_pos: {" << s->sequencia[insercao.removida_pos-1] << ", " << s->sequencia[insercao.removida_pos]  << "} ; custo: " << insercao.custoI << std::endl;
-    }
-    printf("\n");
-}
+// void exibir_custo_de_insercao(std::vector<Insercao> *custosInsercao, Solucao *s){
+//     for(auto insercao : *(custosInsercao)){
+//         std::cout << "no inserido: " << insercao.no << " ; aresta removida_pos: {" << s->sequencia[insercao.removida_pos-1] << ", " << s->sequencia[insercao.removida_pos]  << "} ; custo: " << insercao.custoI << std::endl;
+//     }
+//     printf("\n");
+// }
 
 Solucao* construcao(Solucao *s, Data *dados){
+    Solucao *s_ = new Solucao;
+    Solucao *cl = new Solucao;
 
-    Solucao *s_ = gera_S_aletaoria(s);
-    Solucao *resto = nosRestantes(s, s_);
+    s_->sequencia.push_back(1);
 
-    while(!resto->sequencia.empty()){
-        std::vector<Insercao> custosInsercao = calcula_custo_insercao(s_, resto, dados);
-        std::sort(custosInsercao.begin(), custosInsercao.end(), ordena_por_custo);
+
+    cl->sequencia = s->sequencia;
+    cl->sequencia.erase(cl->sequencia.end());
+    cl->sequencia.erase(cl->sequencia.begin());
+
+    int r = 1;
+    while(!cl->sequencia.empty()){
+
+        std::vector<Insercao> custos_cl_r = calcula_custo_em_relacao_a_r(cl, r, dados);
+
+        std::sort(custos_cl_r.begin(), custos_cl_r.end(), ordena_por_custo);
 
         double alpha = (double) rand() / RAND_MAX;
-        int selecionado = rand() % ((int) ceil(alpha * custosInsercao.size()));
+        int selecionado = rand() % ((int) ceil(alpha * custos_cl_r.size()));
 
-        inserir_em_s(s_, resto, custosInsercao[selecionado]);
+        s_->sequencia.push_back(cl->sequencia[selecionado]);
+        
+        r = cl->sequencia[selecionado];
+
+        cl->sequencia.erase(cl->sequencia.begin()+selecionado);
     }
-    
+
+    delete cl;
+
+    s_->sequencia.push_back(1);
     calcula_custoA(s_, dados);
-    delete resto;
+
     return s_;
 }
 
-void inserir_em_s(Solucao *s,  Solucao *resto, Insercao no){
+std::vector<Insercao> calcula_custo_em_relacao_a_r(Solucao *cl, int r, Data *dados){
 
-    s->sequencia.insert(s->sequencia.begin()+no.removida_pos, no.k_Inserido);
+    std::vector<Insercao> custos_cl_r;
 
-    resto->sequencia.erase(resto->sequencia.begin()+no.inserido_pos);
-
-}
-
-std::vector<Insercao> calcula_custo_insercao(Solucao *s, Solucao *resto, Data *dados){
-    
-    std::vector<Insercao> custosInsercao((s->sequencia.size()-1) * resto->sequencia.size());
-
-    int l = 0;
-
-    for(int i = 1; i < s->sequencia.size(); i++){
+    for(int i = 0; i < cl->sequencia.size(); i++){
         
-        int a_prev = s->sequencia[i-1];
-        int a = s->sequencia[i];
+        Insercao no_atual;
 
-        for(int j = 0; j < resto->sequencia.size(); j++){
+        no_atual.no = cl->sequencia[i];
+        no_atual.custo = dados->getDistance(r, no_atual.no);
 
-            int k = resto->sequencia[j];
-            custosInsercao[l].custoI = dados->getDistance(a_prev, k) + dados->getDistance(k, a) - dados->getDistance(a_prev, a);
-            custosInsercao[l].k_Inserido = k;
-            custosInsercao[l].inserido_pos = j;
-            custosInsercao[l].removida_pos = i;
-            l++;
-        }
+        custos_cl_r.push_back(no_atual);
     }
 
-    return custosInsercao;
+    return custos_cl_r;
 }

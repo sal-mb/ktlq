@@ -33,9 +33,25 @@ int main(int argc, char** argv) {
 
     vector<vector<Subsequencia>> subSeqMatrix(n+1, vector<Subsequencia> (n+1));
 
-    Solucao *s_ = ILS(&s, &data, 50, n > 150 ? n/2 : n, subSeqMatrix);
+    double sumCost = 0;
 
-    exibir_solucao(s_, &data);
+    auto start = chrono::high_resolution_clock::now();
+
+    for(int i = 0; i < 10; i++){
+
+        Solucao *s_ = ILS(&s, &data, 10, n < 100 ? n : 100, subSeqMatrix);
+        sumCost += s_->custoA;
+
+        exibir_solucao(s_, &data);
+        delete s_;
+
+    }
+
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    
+    std::cout << data.getInstanceName();
+    printf(" - %.3lf %.1lf\n", (double)(duration.count())/10000, sumCost/10);
 
     return 0;
 }

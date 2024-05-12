@@ -7,16 +7,12 @@
 
 
 typedef struct Insercao{
-    int k_Inserido;
-    int inserido_pos;
-    int removida_pos;
-    double custoI;
+    int no;
+    double custo; //custo em relacao a r
 }Insercao;
 
-void exibir_custo_de_insercao(std::vector<Insercao> *custosInsercao);
+// void exibir_custo_de_insercao(std::vector<Insercao> *custosInsercao);
 
-void inserir_em_s(Solucao *s, Solucao *resto, Insercao no);
-
-std::vector<Insercao> calcula_custo_insercao(Solucao *s, Solucao *resto, Data *dados);
+std::vector<Insercao> calcula_custo_em_relacao_a_r(Solucao *cl, int r, Data *dados);
 
 #endif
