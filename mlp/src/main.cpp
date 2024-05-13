@@ -35,9 +35,6 @@ int main(int argc, char** argv) {
     vector<vector<Subsequencia>> subSeqMatrix(n+1, vector<Subsequencia> (n+1));
     attMatrizSubSeq(s, subSeqMatrix, 0, &data);
 
-    // exibir_solucao(s, &data);
-    // Solucao s_ = perturbacao(s, &data);
-    // exibir_solucao(s_, &data);
     double sumCost = 0;
 
     auto start = chrono::high_resolution_clock::now();

@@ -11,7 +11,7 @@ for instance in instances/*; do
 	echo "Processando $instance"
 	echo "Instance $k of 68"
 	
-	./tsp ${instance} >> ./output.txt
+	./mlp ${instance} >> ./output.txt
 	
 	k=$(($k+1))
 done
