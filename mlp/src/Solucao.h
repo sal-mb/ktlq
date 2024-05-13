@@ -11,14 +11,12 @@ typedef struct Solucao{
 
 } Solucao;
 
-void exibir_solucao(Solucao *s, Data *dados);
+void exibir_solucao(Solucao &s, Data *dados);
 
-void calcula_custoS(Solucao *s, Data *dados);
+void calcula_custoS(Solucao &s, Data *dados);
 
-void calcula_custoA(Solucao *s, Data *dados);
+void calcula_custoA(Solucao &s, Data *dados);
 
-Solucao* nosRestantes(Solucao *s, Solucao *gerada);
-
-Solucao* perturbacao(Solucao *s, Data *data);
+Solucao perturbacao(Solucao &s, Data *data);
 
 #endif

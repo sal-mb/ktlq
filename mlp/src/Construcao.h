@@ -13,8 +13,8 @@ typedef struct Insercao{
 
 // void exibir_custo_de_insercao(std::vector<Insercao> *custosInsercao);
 
-Solucao* construcao(Solucao *s, Data *dados);
+Solucao construcao(Solucao &s, Data *dados);
 
-std::vector<Insercao> calcula_custo_em_relacao_a_r(Solucao *cl, int r, Data *dados);
+std::vector<Insercao> calcula_custo_em_relacao_a_r(Solucao &cl, int r, Data *dados);
 
 #endif
