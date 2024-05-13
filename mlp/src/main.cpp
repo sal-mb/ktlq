@@ -9,6 +9,7 @@
 #include <time.h>
 #include <chrono>
 #include "Subsequencia.h"
+#include "Construcao.h"
 
 #define EPSILON 0.0005
 
@@ -32,7 +33,7 @@ int main(int argc, char** argv) {
     s.sequencia.push_back(1);
 
     vector<vector<Subsequencia>> subSeqMatrix(n+1, vector<Subsequencia> (n+1));
-
+    attMatrizSubSeq(&s, subSeqMatrix, 0, &data);
     double sumCost = 0;
 
     auto start = chrono::high_resolution_clock::now();
@@ -51,9 +52,8 @@ int main(int argc, char** argv) {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     
     std::cout << data.getInstanceName();
-    printf(" - %.3lf %.1lf\n", (double)(duration.count())/10000, sumCost/10);
+    printf(" - %.3lf %.1lf\n", (double)(duration.count())/1000, sumCost/10);
 
-    return 0;
 }
 
 
@@ -69,7 +69,7 @@ Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls, std::vector<st
         *melhorAtual = *s_;
         int iterILS = 0;
 
-        attMatrizSubSeq(s_, subSeqMatrix, data);
+        attMatrizSubSeq(s_, subSeqMatrix, 0, data);
 
         while(iterILS <= maxIterIls){
             BuscaLocal(s_, data, subSeqMatrix);
@@ -85,7 +85,7 @@ Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls, std::vector<st
             delete s_;
 
             s_ = perturbacao(melhorAtual, data);
-            attMatrizSubSeq(s_, subSeqMatrix, data);
+            attMatrizSubSeq(s_, subSeqMatrix, 0, data);
         }
 
         if(melhorAtual->custoA + EPSILON < melhor->custoA){

@@ -7,7 +7,7 @@
 typedef struct Subsequencia{
     double T, C;
     int W;
-    int primeiro_pos, ultimo_pos;
+    int primeiro, ultimo;
 }Subsequencia;
 
 void exibir_subSeq(Subsequencia &subseq, Solucao *s);
@@ -16,8 +16,7 @@ void exibir_matrizSubSeq(std::vector<std::vector<Subsequencia>> &subSeqMatrix, S
 
 Subsequencia Concatena(Subsequencia &sg_1, Subsequencia &sg_2, Data *data, Solucao *s);
 
-void attMatrizSubSeq(Solucao *s, std::vector<std::vector<Subsequencia>> &subSeqMatrix, Data *data);
+void attMatrizSubSeq(Solucao *s, std::vector<std::vector<Subsequencia>> &subSeqMatrix, int pos, Data *data);
 
-void attMatrizSubSeqInv(Solucao *s, std::vector<std::vector<Subsequencia>> &subSeqMatrix, Data *data);
-
+void upMatrizSubSeq(Solucao *s, std::vector<std::vector<Subsequencia>> &subSeqMatrix, int pos, Data *data);
 #endif

@@ -6,8 +6,8 @@
 
 typedef struct Solucao{
     std::vector<int> sequencia;
-    double custoS = 0;
-    double custoA = 0;
+    double custoS = 0; //custo da solução
+    double custoA = 0; //custo acumulado da solução
 
 } Solucao;
 
@@ -16,10 +16,6 @@ void exibir_solucao(Solucao *s, Data *dados);
 void calcula_custoS(Solucao *s, Data *dados);
 
 void calcula_custoA(Solucao *s, Data *dados);
-
-Solucao* construcao(Solucao *s, Data *dados);
-
-Solucao* gera_S_aletaoria(Solucao *s);
 
 Solucao* nosRestantes(Solucao *s, Solucao *gerada);
 
