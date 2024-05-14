@@ -3,98 +3,60 @@
 #include <algorithm>
 #include <vector>
 
-void exibir_solucao(Solucao *s, Data *dados){
+void exibir_solucao(Solucao &s, Data *dados){
 
     std::cout << "Solução: " << std::endl;
-    for(int i = 0; i < s->sequencia.size() - 1; i++){
-        std::cout << s->sequencia[i] << " -> ";
+    for(int i = 0; i < s.sequencia.size() - 1; i++){
+        std::cout << s.sequencia[i] << " -> ";
     }
-    std::cout << s->sequencia.back() << std::endl;
+    std::cout << s.sequencia.back() << std::endl;
 
-    if(s->custoS != 0){
-        std::cout << "CustoS: " << s->custoS << std::endl;
+    if(s.custoS != 0){
+        std::cout << "CustoS: " << s.custoS << std::endl;
     }else{
         calcula_custoS(s, dados);
-        std::cout << "CustoS: " << s->custoS << std::endl;
+        std::cout << "CustoS: " << s.custoS << std::endl;
     }
 
-    if(s->custoA != 0){
-        std::cout << "CustoA: " << s->custoA << std::endl;
+    if(s.custoA != 0){
+        std::cout << "CustoA: " << s.custoA << std::endl;
     }else{
         calcula_custoA(s, dados);
-        std::cout << "CustoA: " << s->custoA << std::endl;
+        std::cout << "CustoA: " << s.custoA << std::endl;
     }
 }
 
-void calcula_custoS(Solucao *s, Data *dados){
-    s->custoS = 0;
+void calcula_custoS(Solucao &s, Data *dados){
+    s.custoS = 0;
     
-    for(int i = 0; i < s->sequencia.size() - 1; i++){
-        s->custoS += dados->getDistance(s->sequencia[i], s->sequencia[i+1]);
+    for(int i = 0; i < s.sequencia.size() - 1; i++){
+        s.custoS += dados->getDistance(s.sequencia[i], s.sequencia[i+1]);
     }
 
 }
 
 
-void calcula_custoA(Solucao *s, Data *dados){
-    s->custoA = 0;
+void calcula_custoA(Solucao &s, Data *dados){
+    s.custoA = 0;
     
-    for(int i = 0; i < s->sequencia.size(); i++){
+    for(int i = 0; i < s.sequencia.size(); i++){
         for(int j = 0; j < i; j++){
-            s->custoA += dados->getDistance(s->sequencia[j], s->sequencia[j+1]);
+            s.custoA += dados->getDistance(s.sequencia[j], s.sequencia[j+1]);
         }
     }
 
 }
 
 
-Solucao* gera_S_aletaoria(Solucao *s){
+Solucao perturbacao(Solucao &s, Data *data){
 
-    Solucao *s1 = new Solucao;
-    s1->sequencia = {1};
-
-
-    while(s1->sequencia.size() < 4){
-
-        int position = (rand() % (s->sequencia.size()-2)) + 1;
-        int number = s->sequencia.at(position);
-
-        if((std::find(s1->sequencia.begin(), s1->sequencia.end(), number)) == s1->sequencia.end()){
-            s1->sequencia.push_back(number);
-        }
-        
-    }
-
-    s1->sequencia.push_back(1);
-
-    return s1;
-}
-
-
-Solucao* nosRestantes(Solucao *s, Solucao *gerada){
-    
-    Solucao *resto = new Solucao;
-
-    for(int i = 1; i < s->sequencia.size() - 1; i++){
-
-       if((std::find(gerada->sequencia.begin(), gerada->sequencia.end(), s->sequencia[i])) == gerada->sequencia.end()){
-            resto->sequencia.push_back(s->sequencia[i]);
-       }
-    }
-
-    return resto;
-}
-
-Solucao* perturbacao(Solucao *s, Data *data){
-
-    Solucao *perturbada = new Solucao;
-    *perturbada = *s;
+    Solucao perturbada = s;
 
     std::vector<int> bloco1, bloco2;
     int size_b1, size_b2;
 
-    size_b1 = rand() % (perturbada->sequencia.size()/10) + 2;
-    size_b2 = rand() % (perturbada->sequencia.size()/10) + 2;
+    size_b1 = rand() % (perturbada.sequencia.size()/10) + 2;
+    size_b2 = rand() % (perturbada.sequencia.size()/10) + 2;
 
     bloco1.reserve(size_b1);
     bloco2.reserve(size_b2);
@@ -102,12 +64,12 @@ Solucao* perturbacao(Solucao *s, Data *data){
 
     int posicao_b1, posicao_b2;
 
-    posicao_b1 = (rand() % (perturbada->sequencia.size() - (size_b1+1))) + 1;
+    posicao_b1 = (rand() % (perturbada.sequencia.size() - (size_b1+1))) + 1;
 
-    posicao_b2 = (rand() % (perturbada->sequencia.size() - (size_b2+1))) + 1;
+    posicao_b2 = (rand() % (perturbada.sequencia.size() - (size_b2+1))) + 1;
 
     while(posicao_b2 < posicao_b1+size_b1 && posicao_b1 < posicao_b2+size_b2){
-        posicao_b2 = (rand() % (perturbada->sequencia.size() - (size_b2+1))) + 1;
+        posicao_b2 = (rand() % (perturbada.sequencia.size() - (size_b2+1))) + 1;
     }
 
     // std::cout << "[b1] posicao: " << posicao_b1 << ", tamanho: " << size_b1 << std::endl; 
@@ -115,28 +77,26 @@ Solucao* perturbacao(Solucao *s, Data *data){
     
 
     for(int i = 0; i < size_b1; i++){
-        bloco1.push_back(perturbada->sequencia[posicao_b1+i]);
+        bloco1.push_back(perturbada.sequencia[posicao_b1+i]);
     }
     for(int i = 0; i < size_b2; i++){
-        bloco2.push_back(perturbada->sequencia[posicao_b2+i]);
+        bloco2.push_back(perturbada.sequencia[posicao_b2+i]);
     }
     
 
     if(posicao_b1 > posicao_b2){
 
-        perturbada->sequencia.erase(perturbada->sequencia.begin()+posicao_b1, perturbada->sequencia.begin()+posicao_b1+size_b1);
-        perturbada->sequencia.insert(perturbada->sequencia.begin()+posicao_b1, bloco2.begin(), bloco2.end());
-        perturbada->sequencia.erase(perturbada->sequencia.begin()+posicao_b2, perturbada->sequencia.begin()+posicao_b2+size_b2);
-        perturbada->sequencia.insert(perturbada->sequencia.begin()+posicao_b2, bloco1.begin(), bloco1.end());
+        perturbada.sequencia.erase(perturbada.sequencia.begin()+posicao_b1, perturbada.sequencia.begin()+posicao_b1+size_b1);
+        perturbada.sequencia.insert(perturbada.sequencia.begin()+posicao_b1, bloco2.begin(), bloco2.end());
+        perturbada.sequencia.erase(perturbada.sequencia.begin()+posicao_b2, perturbada.sequencia.begin()+posicao_b2+size_b2);
+        perturbada.sequencia.insert(perturbada.sequencia.begin()+posicao_b2, bloco1.begin(), bloco1.end());
     }else{
 
-        perturbada->sequencia.erase(perturbada->sequencia.begin()+posicao_b2, perturbada->sequencia.begin()+posicao_b2+size_b2);
-        perturbada->sequencia.insert(perturbada->sequencia.begin()+posicao_b2, bloco1.begin(), bloco1.end());
-        perturbada->sequencia.erase(perturbada->sequencia.begin()+posicao_b1, perturbada->sequencia.begin()+posicao_b1+size_b1);
-        perturbada->sequencia.insert(perturbada->sequencia.begin()+posicao_b1, bloco2.begin(), bloco2.end());
+        perturbada.sequencia.erase(perturbada.sequencia.begin()+posicao_b2, perturbada.sequencia.begin()+posicao_b2+size_b2);
+        perturbada.sequencia.insert(perturbada.sequencia.begin()+posicao_b2, bloco1.begin(), bloco1.end());
+        perturbada.sequencia.erase(perturbada.sequencia.begin()+posicao_b1, perturbada.sequencia.begin()+posicao_b1+size_b1);
+        perturbada.sequencia.insert(perturbada.sequencia.begin()+posicao_b1, bloco2.begin(), bloco2.end());
     }
     
-    calcula_custoA(perturbada, data);
     return perturbada;
-
 }
