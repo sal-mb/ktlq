@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     
     std::cout << data.getInstanceName();
-    printf(" - %.3lf %.1lf\n", (double)(duration.count())/1000, sumCost/10);
+    printf(" - %.3lf %.1lf\n", (double)(duration.count())/10000, sumCost/10);
 
 }
 

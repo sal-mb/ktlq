@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     
     std::cout << data.getInstanceName();
-    printf(" - %.3lf %.1lf\n", (double)(duration.count())/1000, sumCost/10);
+    printf(" - %.3lf %.1lf\n", (double)(duration.count())/10000, sumCost/10);
 
 }
 
@@ -63,11 +63,12 @@ Solucao* ILS(Solucao* s, Data *data, int maxIter, int maxIterIls, std::vector<st
     for(int i = 0; i <= maxIter; i++){
 
         Solucao *s_ = construcao(s, data);
+
+        attMatrizSubSeq(s_, subSeqMatrix, 0, data);
+
         Solucao *melhorAtual = new Solucao;
         *melhorAtual = *s_;
         int iterILS = 0;
-
-        attMatrizSubSeq(s_, subSeqMatrix, 0, data);
 
         while(iterILS <= maxIterIls){
             BuscaLocal(s_, data, subSeqMatrix);
