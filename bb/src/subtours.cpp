@@ -63,7 +63,7 @@ std::vector<std::vector<int>> detecta_subtours(hungarian_problem_t *p){
 
             std::vector<int>::iterator it;
             it = std::find(subtour.begin(), subtour.end()-1, l);
-
+            
 
             if(it != subtour.end()-1){
     

@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <iterator>
 #include <limits>
+#include <list>
 #include <vector>
 #include <unistd.h>
 
@@ -35,7 +36,12 @@ void erase_node(std::list<Node>::iterator &node, hungarian_problem_t *p, std::li
     tree.erase(node);
 }
 
-void erase_tree(std::list<Node> &tree);
+void erase_tree(std::list<Node> &tree, hungarian_problem_t *p){
+    while(!tree.empty()){
+        std::list<Node>::iterator node = tree.begin();
+        erase_node(node, p, tree);
+    }
+}
 
 void init_cost(Node *node, hungarian_problem_t *p, double** cost){
     double **cost_ = new double*[p->num_rows]; //copia matriz custo original
@@ -64,23 +70,20 @@ void init_node(std::list<Node>::iterator &node, hungarian_problem_t *p){
     node->viable = node->subtours.size()-1 ? false : true;
 }
 
-void bnb(hungarian_problem_t *p, int branching, double** cost){
+void bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuristic){
 
+    //inicializacao da arvore
     Node root;
     root.forbidden_arcs.clear();
-    init_cost(&root, p, cost);
-    root.chosen = 9999;
+    init_cost(&root, p, cost); //copia a matriz de custos para guardar a original
+
     std::list<Node> tree;
     tree.push_back(root);
 
-    std::list<Node>::iterator ri = tree.begin();
-    
-    double upper_bound = 2086;
+    //definindo o upperbound a partir da solucao heuristica disponivel
+    double upper_bound = tsp_heuristic + 1;
 
-    std::vector<Node> viable_solutions;
-
-    while(1){
-        printf("tamanho: %zu\n", tree.size());
+    while(!tree.empty()){
         std::list<Node>::iterator node = branching ? tree.begin() : std::prev(tree.end()); //1 - bfs, 0 - dfs;
 
         init_node(node, p); // resolve o algoritmo hungaro com as restricoes e determina se eh uma solucao para o tsp
@@ -104,15 +107,14 @@ void bnb(hungarian_problem_t *p, int branching, double** cost){
                     
                     n.forbidden_arcs.push_back(forbid);
 
-                    init_cost(&n, p, node->cost_);
+                    init_cost(&n, p, node->cost_); 
+                    //define a matriz dos nós com as novas restricoes
                     
                     tree.push_back(n);
                 }
             }
         }
-
         erase_node(node, p, tree);
     }
-
-    erase_tree(tree);
+    erase_tree(tree, p);
 }
