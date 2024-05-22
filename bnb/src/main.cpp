@@ -53,12 +53,14 @@ int main(int argc, char** argv) {
 
 	auto start = chrono::high_resolution_clock::now();
 
-	bnb(&p, atoi(argv[2]) , cost, tsp_cost);
+	Node s = bnb(&p, atoi(argv[2]) , cost, tsp_cost);
 
 	auto stop = chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
-	printf("Duration:%.3lf", (double) duration.count()/1000);
+	std::cout << data->getInstanceName() << " - " << argv[2] << std::endl;
+	print_viable(&s);
+	printf("%.3lf - %.1lf\n\n", (double) duration.count()/1000, s.lower_bound);
 
 	hungarian_free(&p);
 	for (int i = 0; i < data->getDimension(); i++) delete [] cost[i];

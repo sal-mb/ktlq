@@ -25,8 +25,7 @@ void print_viable(Node *node){
         std::cout << node->subtours[i] +1 << " -> ";
     }
     std::cout << node->subtours[node->subtours.size()-1] +1<< std::endl;
-
-    std::cout << "Cost: " << node->lower_bound << std::endl;
+    
 }
 
 void erase_node(std::list<Node>::iterator &node, hungarian_problem_t *p, std::list<Node> *tree){
@@ -68,7 +67,7 @@ void init_node(Node *node, hungarian_problem_t *p){
     node->viable = p->num_rows - (node->subtours.size() - 1) ? false : true;
 }
 
-void bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuristic){
+Node bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuristic){
 
     //inicializacao da arvore
     Node root;
@@ -83,6 +82,8 @@ void bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuris
     //definindo o upperbound a partir da solucao heuristica disponivel
     double upper_bound = tsp_heuristic + 1;
 
+    Node best_node;
+    
     while(!tree.empty()){
         std::list<Node>::iterator node = branching ? tree.begin() : std::prev(tree.end()); //1 - bfs, 0 - dfs;
 
@@ -93,7 +94,7 @@ void bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuris
                 //entao ela eh a otima
                 //n sei se posso afirmar isso tqv
                 upper_bound = node->lower_bound;
-                print_viable(&(*node));
+                best_node = (*node);
 
             }else{
                 for(int i = 0; i < node->subtours.size()-1; i++){
@@ -117,4 +118,6 @@ void bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuris
         }
         erase_node(node, p, &tree);
     }
+
+    return best_node;
 }

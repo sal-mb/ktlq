@@ -17,7 +17,7 @@ typedef struct Node{
     
 }Node;
 
-void bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuristic);
+Node bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuristic);
 
 void init_node(Node *node, hungarian_problem_t *p);
 
