@@ -85,7 +85,7 @@ Node bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuris
     Node best_node;
     
     while(!tree.empty()){
-        std::cout << tree.size() << std::endl;
+        
         std::list<Node>::iterator node = branching ? tree.begin() : std::prev(tree.end()); //1 - bfs, 0 - dfs;
 
         if(node->lower_bound < upper_bound){
