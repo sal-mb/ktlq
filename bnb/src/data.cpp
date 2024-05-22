@@ -7,13 +7,13 @@ xCoord(NULL),
 yCoord(NULL),
 distMatrix(NULL){
 
-	if ( qtParam < 2 )  {
+	if ( qtParam < 3 )  {
 		cout << "Missing parameters\n";
 		cout << " ./exeLaRP [Instance] [branching] (0 - dfs, 1 - bfs)"  << endl;
 		exit( 1 );        
 	}
 
-	if ( qtParam > 3 )    {
+	if ( qtParam > 3)    {
 		cout << "Too many parameters\n";
 		cout << " ./exeLaRP [Instance] [branching] (0 - dfs, 1 - bfs)"  << endl;
 		exit( 1 );
