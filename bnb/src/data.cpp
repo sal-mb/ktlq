@@ -9,13 +9,13 @@ distMatrix(NULL){
 
 	if ( qtParam < 2 )  {
 		cout << "Missing parameters\n";
-		cout << " ./exeLaRP [Instance] [branching]"  << endl;
+		cout << " ./exeLaRP [Instance] [branching] (0 - dfs, 1 - bfs)"  << endl;
 		exit( 1 );        
 	}
 
 	if ( qtParam > 3 )    {
 		cout << "Too many parameters\n";
-		cout << " ./exeLaRP [Instance] [branching]"  << endl;
+		cout << " ./exeLaRP [Instance] [branching] (0 - dfs, 1 - bfs)"  << endl;
 		exit( 1 );
 	}
 
