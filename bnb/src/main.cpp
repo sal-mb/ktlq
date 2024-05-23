@@ -59,12 +59,9 @@ int main(int argc, char** argv) {
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
 	std::cout << data->getInstanceName() << " - " << argv[2] << std::endl;
-	print_viable(&s);
+	print_node_solution(&s);
 	printf("%.3lf - %.1lf\n\n", (double) duration.count()/1000, s.lower_bound);
 
-	hungarian_free(&p);
-	for (int i = 0; i < data->getDimension(); i++) delete [] cost[i];
-	delete [] cost;
 	delete data;
 
 	return 0;

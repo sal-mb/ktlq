@@ -13,23 +13,13 @@ typedef struct Node{
     std::vector<int> subtours;
     double lower_bound = 0; 
     bool viable = false;
-    double **cost_ = NULL; //matriz de custos
     
 }Node;
 
 Node bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuristic);
 
-void init_node(Node *node, hungarian_problem_t *p);
+void init_node(Node *node, hungarian_problem_t *p, double** cost);
 
-void init_cost(Node *node, hungarian_problem_t *p, double** cost);
+void print_node_solution (Node *node);
 
-std::list<Node>::iterator branching(std::list<Node> tree, int branching);
-
-void erase_node(std::list<Node>::iterator &node, hungarian_problem_t *p, std::list<Node> *tree);
-
-void erase_tree(std::list<Node> *tree, hungarian_problem_t *p);
-
-void print_viable(Node *node);
-
-void print_cost_matrix(Node *node, hungarian_problem_t *p);
 #endif
