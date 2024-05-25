@@ -71,9 +71,11 @@ std::vector<int> detecta_subtours(hungarian_problem_t *p){
                 std::vector<int> subtour_;
                 subtour_.insert(subtour_.begin(), it, subtour.end());
                 subtours.push_back(subtour_);
-                if(subtour_.size() == 2){
+
+                if(subtour_.size() == 3){
                     achou = 1;
-                    break; //se o tamanho do subtour for 2, ele ja eh o menor, entao pode terminar o loop
+                    subtour = subtour_;
+                    break; //se o tamanho do subtour for 3, ele ja eh o menor, entao pode terminar o loop
                 }
 
                 for(int i = 0; i < linhas; i++){
@@ -89,8 +91,8 @@ std::vector<int> detecta_subtours(hungarian_problem_t *p){
     }
     if(!achou){
         std::sort(subtours.begin(), subtours.end(), ordena_por_tamanho);
+        subtour = subtours[0];
     }
-    subtour = subtours[0];
 
     subtours.clear();
     subtours.resize(0);
