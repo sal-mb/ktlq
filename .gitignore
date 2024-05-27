@@ -1,3 +1,6 @@
-bnb/obj/*.d
-bnb/obj/*.o
-bnb/bnb
+**/obj/
+**/bnb
+**/mlp
+**/tsp
+relag/Cid/
+relag/Relaxação-Lagrangeana/
