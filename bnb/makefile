@@ -26,7 +26,7 @@ OBJS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
 
 #### regra principal, gera o executavel
 bnb: $(OBJS) 
-	@echo  "\033[31m \nLinking all objects files: \033[0m"
+	@echo  "Linking all objects files: "
 	$(CPPC) $(BITS_OPTION) $(OBJS) -o $@ $(CCLNFLAGS)
 ############################
 
@@ -36,9 +36,10 @@ bnb: $(OBJS)
 #regra para cada arquivo objeto: compila e gera o arquivo de dependencias do arquivo objeto
 #cada arquivo objeto depende do .c e dos headers (informacao dos header esta no arquivo de dependencias gerado pelo compiler)
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	@echo  "\033[31m \nCompiling $<: \033[0m"
+	@mkdir -p obj
+	@echo  "Compiling $<: "
 	$(CPPC) $(CCFLAGS) -c $< -o $@
-	@echo  "\033[32m \ncreating $< dependency file: \033[0m"
+	@echo  "Creating $< dependency file: "
 	$(CPPC) -std=c++0x  -MM $< > $(basename $@).d
 	@mv -f $(basename $@).d $(basename $@).d.tmp #proximas tres linhas colocam o diretorio no arquivo de dependencias (g++ nao coloca, surprisingly!)
 	@sed -e 's|.*:|$(basename $@).o:|' < $(basename $@).d.tmp > $(basename $@).d
@@ -46,8 +47,8 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 
 #delete objetos e arquivos de dependencia
 clean:
-	@echo "\033[31mcleaning obj directory \033[0m"
-	@rm mlp -f $(OBJDIR)/*.o $(OBJDIR)/*.d
+	@echo "cleaning obj directory"
+	@rm bnb -f $(OBJDIR)/*.o $(OBJDIR)/*.d
 
 
-rebuild: clean mlp
+rebuild: clean bnb

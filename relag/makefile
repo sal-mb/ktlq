@@ -6,7 +6,7 @@ CPPC = g++
 #############################
 
 #### opcoes de compilacao e includes
-CCOPT = $(BITS_OPTION) -O3 -fPIC -fexceptions -DNDEBUG -DIL_STD -std=c++0x
+CCOPT = $(BITS_OPTION) -O3 -fPIC -fexceptions -DIL_STD -std=c++0x
 CONCERTINCDIR = $(CONCERTDIR)/include
 CCFLAGS = $(CCOPT)
 #############################
@@ -25,7 +25,7 @@ OBJS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
 #############################
 
 #### regra principal, gera o executavel
-tsp: $(OBJS) 
+relag: $(OBJS) 
 	@echo  "Linking all objects files: "
 	$(CPPC) $(BITS_OPTION) $(OBJS) -o $@ $(CCLNFLAGS)
 ############################
@@ -48,7 +48,6 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 #delete objetos e arquivos de dependencia
 clean:
 	@echo "cleaning obj directory"
-	@rm tsp -f $(OBJDIR)/*.o $(OBJDIR)/*.d
+	@rm relag -f $(OBJDIR)/*.o $(OBJDIR)/*.d
 
-
-rebuild: clean tsp
+rebuild: clean relag
