@@ -1,13 +1,13 @@
-#include "bnb.h"
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
 #include <string>
 #include <unistd.h>
 #include "data.h"
-#include "hungarian.h"
-#include <sys/wait.h>
 #include <chrono>
+#include <vector>
+#include "Kruskal.h"
+#include "subgradiente.h"
 
 using namespace std;
 
@@ -40,45 +40,51 @@ int main(int argc, char** argv) {
 	data->readData();
 
 	//inicializa matriz custo
-	double **cost = new double*[data->getDimension()];
+	
+	vvi cost;
+
 	for (int i = 0; i < data->getDimension(); i++){
-		cost[i] = new double[data->getDimension()];
+		vector<double> line_costs;
 		for (int j = 0; j < data->getDimension(); j++){
-			cost[i][j] = data->getDistance(i,j);
+			line_costs.push_back(data->getDistance(i,j));
 		}
+		cost.push_back(line_costs);
 	}
 	
-	hungarian_problem_t p;
-	int mode = HUNGARIAN_MODE_MINIMIZE_COST;
-	hungarian_init(&p, cost, data->getDimension(), data->getDimension(), mode); // Carregando o problema
-	
-	double obj = hungarian_solve(&p);
-	//eh necessario carregar o problema para definir os valores de p->num_rows e p->num_cols utilizados na funcao bnb
+	Kruskal *kruskal = new Kruskal(cost);
 
+	vii solution;
+
+	kruskal->MST(data->getDimension());
+
+	solution = kruskal->getEdges();
+
+	for(int i = 0; i < solution.size(); i++){
+		cout << solution[i].first << " - " << solution[i].second << endl;
+	}
+
+	cout << "\n-------------------\n" << endl;
 	double tsp_cost;
 
-	if(argv[3] == NULL){
-		//se o valor do custo da solucao heuristica do tsp nao for passado como argumento
-		//ele eh lido do arquivo "table.txt"
-		//caso nao exista em "table.txt", o erro eh retornado
-		tsp_cost = read_instance_cost(data->getInstanceName());
+	// if(argv[3] == NULL){
+	// 	//se o valor do custo da solucao heuristica do tsp nao for passado como argumento
+	// 	//ele eh lido do arquivo "table.txt"
+	// 	//caso nao exista em "table.txt", o erro eh retornado
+	// 	tsp_cost = read_instance_cost(data->getInstanceName());
 		
-	}else{
-		tsp_cost = stod(argv[3]);
-	}
+	// }else{
+	// 	tsp_cost = stod(argv[3]);
+	// }
 	
 	auto start = chrono::high_resolution_clock::now();
 
-	Node s = bnb(&p, atoi(argv[2]) , cost, tsp_cost);
-
 	auto stop = chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-
-	std::cout << data->getInstanceName() << " - " << argv[2] << std::endl;
-	print_node_solution(&s);
-	printf("%.3lf - %.1lf\n\n", (double) duration.count()/1000, s.lower_bound);
+    
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
 	delete data;
+
+	delete kruskal;
 
 	return 0;
 }

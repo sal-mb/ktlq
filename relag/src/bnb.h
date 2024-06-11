@@ -5,7 +5,6 @@
 #include <utility>
 #include <vector>
 #include <list>
-#include "hungarian.h"
 
 typedef struct Node{
 
@@ -16,9 +15,7 @@ typedef struct Node{
     
 }Node;
 
-Node bnb(hungarian_problem_t *p, int branching, double** cost, double tsp_heuristic);
-
-void init_node(Node *node, hungarian_problem_t *p, double** cost);
+Node bnb(int branching, double** cost, double tsp_heuristic);
 
 void print_node_solution (Node *node);
 
