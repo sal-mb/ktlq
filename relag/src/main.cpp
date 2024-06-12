@@ -51,40 +51,31 @@ int main(int argc, char** argv) {
 		cost.push_back(line_costs);
 	}
 	
-	Kruskal *kruskal = new Kruskal(cost);
-
-	vii solution;
-
-	kruskal->MST(data->getDimension());
-
-	solution = kruskal->getEdges();
-
-	for(int i = 0; i < solution.size(); i++){
-		cout << solution[i].first << " - " << solution[i].second << endl;
-	}
-
-	cout << "\n-------------------\n" << endl;
 	double tsp_cost;
 
-	// if(argv[3] == NULL){
-	// 	//se o valor do custo da solucao heuristica do tsp nao for passado como argumento
-	// 	//ele eh lido do arquivo "table.txt"
-	// 	//caso nao exista em "table.txt", o erro eh retornado
-	// 	tsp_cost = read_instance_cost(data->getInstanceName());
+	if(argv[2] == NULL){
+		//se o valor do custo da solucao heuristica do tsp nao for passado como argumento
+		//ele eh lido do arquivo "table.txt"
+		//caso nao exista em "table.txt", o erro eh retornado
+		tsp_cost = read_instance_cost(data->getInstanceName());
 		
-	// }else{
-	// 	tsp_cost = stod(argv[3]);
-	// }
+	}else{
+		tsp_cost = stod(argv[2]);
+	}
 	
 	auto start = chrono::high_resolution_clock::now();
 
+	vector<double> lmb = subgradiente(tsp_cost+1, data, cost);
+
 	auto stop = chrono::high_resolution_clock::now();
-    
+
+	for(int i = 0; i < lmb.size(); i++){
+		cout << lmb[i] << endl;
+	}
+
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
 	delete data;
-
-	delete kruskal;
 
 	return 0;
 }

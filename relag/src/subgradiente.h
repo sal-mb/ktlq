@@ -10,3 +10,5 @@ vector<int> calcula_graus(vii msp, int n);
 inline double tamanho_do_passo(double upper_bound, double w, vector<int> graus);
 
 inline void altera_penalizadores(vector<double> &lmb, double u, vector<int> graus);
+
+inline vvi altera_custos(vvi &custos, vector<double> lmb);
