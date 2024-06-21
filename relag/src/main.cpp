@@ -33,6 +33,28 @@ double read_instance_cost(std::string instance_name){
 	return stod(word);
 }
 
+vvi cost_matrix_from_file(){
+
+	ifstream file("teste.txt");
+
+	vvi cost_matrix;
+
+	for(int i = 0; i < 5; i++){
+		vector<double> line_costs;
+
+		for(int j = 0; j < 5; j++){
+			double d;
+			file >> d;
+			line_costs.push_back(d);
+
+		}
+
+		cost_matrix.push_back(line_costs);
+	}
+
+	return cost_matrix;
+}
+
 int main(int argc, char** argv) {
 
 	//le a instacia
@@ -41,14 +63,21 @@ int main(int argc, char** argv) {
 
 	//inicializa matriz custo
 	
-	vvi cost;
+	vvi cost = cost_matrix_from_file();
 
-	for (int i = 0; i < data->getDimension(); i++){
-		vector<double> line_costs;
-		for (int j = 0; j < data->getDimension(); j++){
-			line_costs.push_back(data->getDistance(i,j));
+	// for (int i = 0; i < data->getDimension(); i++){
+	// 	vector<double> line_costs;
+	// 	for (int j = 0; j < data->getDimension(); j++){
+	// 		line_costs.push_back(data->getDistance(i,j));
+	// 	}
+	// 	cost.push_back(line_costs);
+	// }
+
+	for (int i = 0; i < 5; i++){
+		for (int j = 0; j < 5; j++){
+			cout << cost[i][j] << " - ";
 		}
-		cost.push_back(line_costs);
+		cout << "\n";
 	}
 	
 	double tsp_cost;
@@ -69,9 +98,9 @@ int main(int argc, char** argv) {
 
 	auto stop = chrono::high_resolution_clock::now();
 
-	for(int i = 0; i < lmb.size(); i++){
-		cout << lmb[i] << endl;
-	}
+	// for(int i = 0; i < lmb.size(); i++){
+	// 	cout << lmb[i] << endl;
+	// }
 
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
