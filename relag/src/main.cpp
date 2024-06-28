@@ -35,7 +35,7 @@ double read_instance_cost(std::string instance_name){
 
 vvi cost_matrix_from_file(){
 
-	ifstream file("teste.txt");
+	ifstream file("matriz_de_custos.txt");
 
 	vvi cost_matrix;
 
@@ -63,21 +63,14 @@ int main(int argc, char** argv) {
 
 	//inicializa matriz custo
 	
-	vvi cost = cost_matrix_from_file();
+	vvi cost;
 
-	// for (int i = 0; i < data->getDimension(); i++){
-	// 	vector<double> line_costs;
-	// 	for (int j = 0; j < data->getDimension(); j++){
-	// 		line_costs.push_back(data->getDistance(i,j));
-	// 	}
-	// 	cost.push_back(line_costs);
-	// }
-
-	for (int i = 0; i < 5; i++){
-		for (int j = 0; j < 5; j++){
-			cout << cost[i][j] << " - ";
+	for (int i = 0; i < data->getDimension(); i++){
+		vector<double> line_costs;
+		for (int j = 0; j < data->getDimension(); j++){
+			line_costs.push_back(data->getDistance(i,j));
 		}
-		cout << "\n";
+		cost.push_back(line_costs);
 	}
 	
 	double tsp_cost;
@@ -97,10 +90,6 @@ int main(int argc, char** argv) {
 	vector<double> lmb = subgradiente(tsp_cost+1, data, cost);
 
 	auto stop = chrono::high_resolution_clock::now();
-
-	// for(int i = 0; i < lmb.size(); i++){
-	// 	cout << lmb[i] << endl;
-	// }
 
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 

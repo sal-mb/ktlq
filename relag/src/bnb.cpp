@@ -4,16 +4,6 @@
 #include <vector>
 #include <unistd.h>
 
-
-void print_node_solution (Node *node){
-
-    for(int i = 0; i < node->subtours.size()-1; i++){
-        std::cout << node->subtours[i] +1 << " -> ";
-    }
-    std::cout << node->subtours[node->subtours.size()-1] +1<< std::endl;
-    
-}
-
 Node bnb( int branching, double** cost, double tsp_heuristic){
 
     //inicializacao da arvore

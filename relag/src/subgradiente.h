@@ -11,9 +11,9 @@ typedef struct solucao_t{
 
 }solucao_t;
 
-vector<double> subgradiente(double heuristic_ub, Data *data, vvi cost_matrix);
+vector<double> subgradiente(double ub_heuristico, Data *data, vvi cost_matrix);
 
-vector<int> calcula_graus(vii msp, int n);
+vector<int> calcula_graus(vii msp, int n, pair<int,int> best_nodes);
 
 double tamanho_do_passo(double upper_bound, double w, vector<int> graus);
 
@@ -21,4 +21,4 @@ inline void altera_penalizadores(vector<double> &lmb, double u, vector<int> grau
 
 vvi altera_custos(vvi custos, vector<double> lmb);
 
-pair<int,int> insere_no_0(vvi custos, double partial_cost, Data *data, vii edges);
+pair<int,int> melhores_nos_0(vvi custos, double partial_cost, int n, vii edges);

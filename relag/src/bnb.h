@@ -17,6 +17,4 @@ typedef struct Node{
 
 Node bnb(int branching, double** cost, double tsp_heuristic);
 
-void print_node_solution (Node *node);
-
 #endif
