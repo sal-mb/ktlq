@@ -8,6 +8,7 @@
 #include <vector>
 #include "Kruskal.h"
 #include "subgradiente.h"
+#include "prints.h"
 
 using namespace std;
 
@@ -87,11 +88,17 @@ int main(int argc, char** argv) {
 	
 	auto start = chrono::high_resolution_clock::now();
 
-	vector<double> lmb = subgradiente(tsp_cost+1, data, cost);
+	solucao_t s_ = subgradiente(tsp_cost+1, data->getDimension(), cost);
 
 	auto stop = chrono::high_resolution_clock::now();
 
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+
+	vvi custos_penalizados = altera_custos(cost, s_.penalizadores);
+
+	print_matriz_de_custo(custos_penalizados);
+
+	print_solution(s_);
 
 	delete data;
 

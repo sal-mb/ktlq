@@ -6,12 +6,15 @@
 #include "data.h"
 
 typedef struct solucao_t{
-    vii sequencia;
+    vii arestas;
+    vector<double> penalizadores;
     double cost;
 
 }solucao_t;
 
-vector<double> subgradiente(double ub_heuristico, Data *data, vvi cost_matrix);
+inline solucao_t melhor_solucao(double w, vector<double> lmb, vii edges, pair<int,int> best_nodes); 
+
+solucao_t subgradiente(double ub_heuristico, int n, vvi cost_matrix);
 
 vector<int> calcula_graus(vii msp, int n, pair<int,int> best_nodes);
 
