@@ -13,6 +13,8 @@ void print_subgradiente(vector<int> graus);
 
 void print_matriz_de_custo(vvi cost);
 
-void print_solution(solucao_t s);
+void print_no(Node no);
+
+void print_arcos_para_proibir(vector<pair<int,int>> arcos);
 
 #endif

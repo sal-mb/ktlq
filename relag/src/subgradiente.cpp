@@ -6,9 +6,7 @@
 #include "unistd.h"
 #include "prints.h"
 
-inline solucao_t melhor_solucao(double w, vector<double> lmb, vii edges, pair<int,int> best_nodes){
-
-    solucao_t best;
+inline void melhor_no(Node &best, double w, vector<double> lmb, vii edges, pair<int,int> best_nodes){
 
     best.arestas = edges;
     best.arestas.push_back(make_pair(0, best_nodes.first));
@@ -17,19 +15,18 @@ inline solucao_t melhor_solucao(double w, vector<double> lmb, vii edges, pair<in
     best.penalizadores = lmb;
 
     best.cost = w;
-
-    return best;
 }
 
-vector<int> calcula_graus(vii msp, int n, pair<int,int> melhores_nos){
+vector<int> calcula_graus_msp(vii msp, pair<int,int> melhores_nos){
 
-    vector<int> graus(n, 0); //inicia os graus dos vertices com 0
+    vector<int> graus(msp.size()+2, 0); //inicia os graus dos vertices com 0
 
     for(int i = 0; i < msp.size(); i++){
         graus[msp[i].second]++;
         graus[msp[i].first]++;
     }
 
+    
     graus[melhores_nos.first]++;
     graus[melhores_nos.second]++;
 
@@ -48,7 +45,6 @@ double tamanho_do_passo(double upper_bound, double w, vector<int> graus){
     if(acumulador == 0){
         //criteiro de parada Ax = b
 
-        cout << "Ax = b - " << acumulador << endl;
         return 0;
     }
 
@@ -113,16 +109,14 @@ pair<int,int> melhores_nos_0(vvi custos, double w, int n, vii edges){
     return make_pair(best_node_1, best_node_2);
 }
 
-solucao_t subgradiente(double ub_heuristico, int n, vvi cost_matrix){
+Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb_){
     // n = tamanho da instancia
 
-    solucao_t best_solution;
+    Node best_node;
 
-    double ub = ub_heuristico;
-
-    vector<double> lmb(n, 0); //lâmbida
+    vector<double> lmb = lmb_;
     vector<double> best_lmb(n, 0); 
-
+    
     int k = 0; //iterador
     double e = 1; //fator de passo
     double u = 0; //tamanho do passo
@@ -134,46 +128,48 @@ solucao_t subgradiente(double ub_heuristico, int n, vvi cost_matrix){
 
     //0.005 -  fator de passo minimo
 
+    print_penalizadores(lmb);
+    print_matriz_de_custo(custos_penalizados);
     while(e >= 0.005){
-
+        
         Kruskal x_(custos_penalizados);   
 
         double mst_cost = x_.MST(n);
 
         pair<int,int> melhores_nos = melhores_nos_0(custos_penalizados, mst_cost, n, x_.getEdges());
 
-        vector<int> graus = calcula_graus(x_.getEdges(), n, melhores_nos);
+        vector<int> graus = calcula_graus_msp(x_.getEdges(), melhores_nos);
 
         double w = mst_cost + custos_penalizados[0][melhores_nos.first] + custos_penalizados[0][melhores_nos.second];
 
         u = e * tamanho_do_passo(ub, w, graus);
 
         altera_penalizadores(lmb, u, graus);
-    
-        if(w > best_solution.cost){
+
+        if(w > best_node.cost){
             k = 0;
 
-            best_solution = melhor_solucao(w, lmb, x_.getEdges(), melhores_nos);
-
+            melhor_no(best_node, w, lmb, x_.getEdges(), melhores_nos);
+            print_no(best_node);
         }else{
             k++;
 
             if(k >= 30){
-  
                 k = 0;
                 e /= 2;
-
             }
         }
 
         if(u < 0.00001){
-            print_subgradiente(graus);
-            best_solution = melhor_solucao(w, lmb, x_.getEdges(), melhores_nos);
+
+            melhor_no(best_node, w, lmb, x_.getEdges(), melhores_nos);
+            best_node.feasible = true;
             break;
         }
 
         custos_penalizados = altera_custos(cost_matrix, lmb);
     }
 
-    return best_solution;
+    
+    return best_node;
 }

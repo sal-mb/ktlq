@@ -3,20 +3,15 @@
 #include <numeric>
 #include <vector>
 #include "Kruskal.h"
+#include "bnb.h"
 #include "data.h"
+#include "bnb.h"
 
-typedef struct solucao_t{
-    vii arestas;
-    vector<double> penalizadores;
-    double cost;
+inline void melhor_no(Node &best, double w, vector<double> lmb, vii edges, pair<int,int> best_nodes); 
 
-}solucao_t;
+Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb);
 
-inline solucao_t melhor_solucao(double w, vector<double> lmb, vii edges, pair<int,int> best_nodes); 
-
-solucao_t subgradiente(double ub_heuristico, int n, vvi cost_matrix);
-
-vector<int> calcula_graus(vii msp, int n, pair<int,int> best_nodes);
+vector<int> calcula_graus_msp(vii msp, pair<int,int> best_nodes);
 
 double tamanho_do_passo(double upper_bound, double w, vector<int> graus);
 
