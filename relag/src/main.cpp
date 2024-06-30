@@ -76,23 +76,25 @@ int main(int argc, char** argv) {
 	
 	double tsp_cost;
 
-	if(argv[2] == NULL){
+	if(argv[3] == NULL){
 		//se o valor do custo da solucao heuristica do tsp nao for passado como argumento
 		//ele eh lido do arquivo "table.txt"
 		//caso nao exista em "table.txt", o erro eh retornado
 		tsp_cost = read_instance_cost(data->getInstanceName());
 		
 	}else{
-		tsp_cost = stod(argv[2]);
+		tsp_cost = stod(argv[3]);
 	}
 	
 	auto start = chrono::high_resolution_clock::now();
 
-	Node s_ = bnb(0, cost, tsp_cost+1, data->getDimension());
+	Node s_ = bnb(atoi(argv[2]), cost, tsp_cost+1, data->getDimension());
 
 	auto stop = chrono::high_resolution_clock::now();
 
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+
+	print_no(s_);
 
 	delete data;
 

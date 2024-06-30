@@ -11,7 +11,6 @@ typedef struct Node{
     vii arestas;
     vector<double> penalizadores;
     vector<pair<int,int>> arcos_proibidos;
-    vvi matriz_de_custos;
     double cost;
 
     bool feasible = false;

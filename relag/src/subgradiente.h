@@ -9,7 +9,7 @@
 
 inline void melhor_no(Node &best, double w, vector<double> lmb, vii edges, pair<int,int> best_nodes); 
 
-Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb);
+Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb, Node node);
 
 vector<int> calcula_graus_msp(vii msp, pair<int,int> best_nodes);
 

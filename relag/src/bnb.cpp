@@ -51,10 +51,8 @@ void proibe_arcos(Node &no, vvi &cost_matrix){
 
     for(int i = 0; i < no.arcos_proibidos.size(); i++){
         cost_matrix[no.arcos_proibidos[i].first][no.arcos_proibidos[i].second] = 99999999;
+        cost_matrix[no.arcos_proibidos[i].second][no.arcos_proibidos[i].first] = 99999999;
     }
-    
-    //associa a nova matriz de custos ao no
-    no.matriz_de_custos = cost_matrix;
 }
 
 Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
@@ -64,7 +62,8 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
     //inicializacao da arvore
     vector<double> lmb(n,0);
 
-    Node root = subgradiente(tsp_heuristic, n, cost_matrix, lmb);
+    Node root; 
+    root = subgradiente(tsp_heuristic, n, cost_matrix, lmb, root);
 
     std::list<Node> tree;
     tree.push_back(root);
@@ -75,8 +74,7 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
     Node best_node;
     
     while(!tree.empty()){
-        cout << tree.size() << endl;
-        sleep(1);
+
         list<Node>::iterator node = branching ? tree.begin() : std::prev(tree.end()); //1 - bfs, 0 - dfs;
 
         if(node->cost <= upper_bound){
@@ -91,8 +89,6 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
                 vector<pair<int,int>> arcos = arcos_para_proibir(node->arestas);
 
                 for(int i = 0; i < arcos.size(); i++){
-                    cout << arcos[i].first << " -> " << arcos[i].second << " / ";
-                    sleep(1); 
                     Node no;
 
                     //herda os arcos proibidos e os penalizadores do nó pai
@@ -105,17 +101,18 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
                     vvi custos_arcos_proibidos = cost_matrix;
                     proibe_arcos(no, custos_arcos_proibidos);
 
-                    no = subgradiente(upper_bound, n, no.matriz_de_custos, no.penalizadores);
+                    no = subgradiente(tsp_heuristic, n, custos_arcos_proibidos, no.penalizadores, (*node));
+
+                    vector<int> graus = calcula_graus(no.arestas);
 
                     if(no.cost < upper_bound){
                         tree.push_back(no);
-                        // print_subgradiente(calcula_graus(no.arestas));
-                        // print_no(no);
+
                     }
-                    getchar();
                 }  
             }
         }
+
         tree.erase(node);
     }
 

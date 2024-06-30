@@ -109,10 +109,10 @@ pair<int,int> melhores_nos_0(vvi custos, double w, int n, vii edges){
     return make_pair(best_node_1, best_node_2);
 }
 
-Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb_){
+Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb_, Node node){
     // n = tamanho da instancia
 
-    Node best_node;
+    Node best_node = node;
 
     vector<double> lmb = lmb_;
     vector<double> best_lmb(n, 0); 
@@ -124,14 +124,13 @@ Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb_){
     double best = 0;
     best_lmb = lmb;
     
-    vvi custos_penalizados = cost_matrix;
+    vvi custos_penalizados = altera_custos(cost_matrix, lmb);
+    // 0.005 -  fator de passo minimo
 
-    //0.005 -  fator de passo minimo
+    int count = 0;
 
-    print_penalizadores(lmb);
-    print_matriz_de_custo(custos_penalizados);
     while(e >= 0.005){
-        
+
         Kruskal x_(custos_penalizados);   
 
         double mst_cost = x_.MST(n);
@@ -146,17 +145,18 @@ Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb_){
 
         altera_penalizadores(lmb, u, graus);
 
+
         if(w > best_node.cost){
             k = 0;
-
+           
             melhor_no(best_node, w, lmb, x_.getEdges(), melhores_nos);
-            print_no(best_node);
+
         }else{
             k++;
 
             if(k >= 30){
                 k = 0;
-                e /= 2;
+                e = e/2;
             }
         }
 
@@ -170,6 +170,5 @@ Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb_){
         custos_penalizados = altera_custos(cost_matrix, lmb);
     }
 
-    
     return best_node;
 }
