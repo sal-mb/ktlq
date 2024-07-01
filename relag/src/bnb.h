@@ -22,6 +22,6 @@ vector<int> calcula_graus(vii arestas);
 
 vector<pair<int,int>> arestas_para_proibir(vii arestas);
 
-void proibe_arestas(Node &no, vvi &cost_matrix);
+vvi proibe_arestas(vii arestas, vvi cost_matrix);
 
 #endif

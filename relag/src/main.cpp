@@ -7,7 +7,6 @@
 #include <chrono>
 #include <vector>
 #include "Kruskal.h"
-#include "subgradiente.h"
 #include "prints.h"
 
 using namespace std;
@@ -95,6 +94,8 @@ int main(int argc, char** argv) {
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
 	print_no(s_);
+
+	cout << "time " << (double)(duration.count())/10000 << endl;
 
 	delete data;
 

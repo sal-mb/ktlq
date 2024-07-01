@@ -5,7 +5,6 @@
 #include <utility>
 #include <vector>
 #include <unistd.h>
-#include "prints.h"
 #include "subgradiente.h"
 
 vector<int> calcula_graus(vii arestas){
@@ -28,6 +27,7 @@ vector<pair<int,int>> arestas_para_proibir(vii arestas){
     int maior_grau = 0;
 
     //acha o nó de maior grau
+
     for(int i = 0; i < graus.size(); i++){
         if(graus[i] > maior_grau){
             no_maior_grau = i;
@@ -35,24 +35,30 @@ vector<pair<int,int>> arestas_para_proibir(vii arestas){
         }
     }
 
+    //-----------------------------------------------------------------------
+
     vector<pair<int,int>> arestas_proibidos;
 
     //adiciona os arestas do no de maior grau ao vetor de arestas proibidos
+
     for(int i = 0; i < arestas.size(); i++){
         if(arestas[i].first == no_maior_grau || arestas[i].second == no_maior_grau){
             arestas_proibidos.push_back(make_pair(arestas[i].first, arestas[i].second));
         }
     }
 
+    //-----------------------------------------------------------------------------------
     return arestas_proibidos;
 }
 
-void proibe_arestas(Node &no, vvi &cost_matrix){
+vvi proibe_arestas(vii arestas, vvi cost_matrix){
 
-    for(int i = 0; i < no.arestas_proibidos.size(); i++){
-        cost_matrix[no.arestas_proibidos[i].first][no.arestas_proibidos[i].second] = 99999999;
-        cost_matrix[no.arestas_proibidos[i].second][no.arestas_proibidos[i].first] = 99999999;
+    for(int i = 0; i < arestas.size(); i++){
+        cost_matrix[arestas[i].first][arestas[i].second] = 99999999;
+        cost_matrix[arestas[i].second][arestas[i].first] = 99999999;
     }
+
+    return cost_matrix;
 }
 
 Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
@@ -60,16 +66,22 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
     // n = tamanho da instancia
 
     //inicializacao da arvore
+
     vector<double> lmb(n,0);
 
     Node root; 
-    root = subgradiente(tsp_heuristic, n, cost_matrix, lmb, root);
+    root = subgradiente(tsp_heuristic, n, cost_matrix, lmb);
 
     std::list<Node> tree;
     tree.push_back(root);
 
+    //----------------------------------------------------------------------------
+
     //definindo o upperbound a partir da solucao heuristica disponivel
+
     double upper_bound = tsp_heuristic;
+
+    //----------------------------------------------------------------------------
 
     Node best_node;
     
@@ -90,27 +102,27 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
 
                 for(int i = 0; i < arestas.size(); i++){
 
-                    // cout << arestas[i].first << " -> " << arestas[i].second;
                     Node no;
 
-                    //herda os arestas proibidas e os penalizadores do nó pai
+                    vii arestas_proibidas = node->arestas_proibidas; 
+                    arestas_proibidas.push_back(arestas[i]);
 
-                    no.arestas_proibidas = node->arestas_proibidas; 
-                    no.penalizadores = node->penalizadores;
+                    vvi custos_arestas_proibidas = proibe_arestas(arestas_proibidas, cost_matrix);
 
-                    no.arestas_proibidas.push_back(arestas[i]);
+                    //executa o metodo do subgradiente com uma matriz de custos com as arestas proibidas e com os penalizadores do nó pai
 
-                    vvi custos_arestas_proibidos = cost_matrix;
-                    proibe_arestas(no, custos_arestas_proibidos);
+                    no = subgradiente(tsp_heuristic, n, custos_arestas_proibidas, node->penalizadores);
+                    
+                    //--------------------------------------------------------------------------------------------------------------------
 
-                    // cout << " - custo: " << custos_arestas_proibidos[arestas[i].first][arestas[i].second] << " = " << custos_arestas_proibidos[arestas[i].second][arestas[i].first] << endl;
-                    no = subgradiente(tsp_heuristic, n, custos_arestas_proibidos, no.penalizadores, (*node));
+                    //herda os arestas proibidas do nó pai
+                    
+                    no.arestas_proibidas = arestas_proibidas;
 
-                    vector<int> graus = calcula_graus(no.arestas);
-
+                    //--------------------------------------------------------------------------------------------------------------------
+                    
                     if(no.cost < upper_bound){
                         tree.push_back(no);
-                        cout << no.cost << endl;
 
                     }
                 }  
