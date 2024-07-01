@@ -61,6 +61,10 @@ void print_no(Node no){
 
 	cout << "custo: " << no.cost << endl;
 
+	if(no.feasible){
+		cout << "feasible!" << endl;
+	}
+
 }
 
 void print_arcos_para_proibir(vector<pair<int,int>> arcos){

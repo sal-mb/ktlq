@@ -20,7 +20,7 @@ vector<int> calcula_graus(vii arestas){
     return graus;
 }
 
-vector<pair<int,int>> arcos_para_proibir(vii arestas){
+vector<pair<int,int>> arestas_para_proibir(vii arestas){
 
     vector<int> graus = calcula_graus(arestas);
 
@@ -35,23 +35,23 @@ vector<pair<int,int>> arcos_para_proibir(vii arestas){
         }
     }
 
-    vector<pair<int,int>> arcos_proibidos;
+    vector<pair<int,int>> arestas_proibidos;
 
-    //adiciona os arcos do no de maior grau ao vetor de arcos proibidos
+    //adiciona os arestas do no de maior grau ao vetor de arestas proibidos
     for(int i = 0; i < arestas.size(); i++){
         if(arestas[i].first == no_maior_grau || arestas[i].second == no_maior_grau){
-            arcos_proibidos.push_back(make_pair(arestas[i].first, arestas[i].second));
+            arestas_proibidos.push_back(make_pair(arestas[i].first, arestas[i].second));
         }
     }
 
-    return arcos_proibidos;
+    return arestas_proibidos;
 }
 
-void proibe_arcos(Node &no, vvi &cost_matrix){
+void proibe_arestas(Node &no, vvi &cost_matrix){
 
-    for(int i = 0; i < no.arcos_proibidos.size(); i++){
-        cost_matrix[no.arcos_proibidos[i].first][no.arcos_proibidos[i].second] = 99999999;
-        cost_matrix[no.arcos_proibidos[i].second][no.arcos_proibidos[i].first] = 99999999;
+    for(int i = 0; i < no.arestas_proibidos.size(); i++){
+        cost_matrix[no.arestas_proibidos[i].first][no.arestas_proibidos[i].second] = 99999999;
+        cost_matrix[no.arestas_proibidos[i].second][no.arestas_proibidos[i].first] = 99999999;
     }
 }
 
@@ -86,27 +86,31 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
 
             }else{
                 
-                vector<pair<int,int>> arcos = arcos_para_proibir(node->arestas);
+                vector<pair<int,int>> arestas = arestas_para_proibir(node->arestas);
 
-                for(int i = 0; i < arcos.size(); i++){
+                for(int i = 0; i < arestas.size(); i++){
+
+                    // cout << arestas[i].first << " -> " << arestas[i].second;
                     Node no;
 
-                    //herda os arcos proibidos e os penalizadores do nó pai
+                    //herda os arestas proibidas e os penalizadores do nó pai
 
-                    no.arcos_proibidos = node->arcos_proibidos; 
+                    no.arestas_proibidas = node->arestas_proibidas; 
                     no.penalizadores = node->penalizadores;
 
-                    no.arcos_proibidos.push_back(arcos[i]);
+                    no.arestas_proibidas.push_back(arestas[i]);
 
-                    vvi custos_arcos_proibidos = cost_matrix;
-                    proibe_arcos(no, custos_arcos_proibidos);
+                    vvi custos_arestas_proibidos = cost_matrix;
+                    proibe_arestas(no, custos_arestas_proibidos);
 
-                    no = subgradiente(tsp_heuristic, n, custos_arcos_proibidos, no.penalizadores, (*node));
+                    // cout << " - custo: " << custos_arestas_proibidos[arestas[i].first][arestas[i].second] << " = " << custos_arestas_proibidos[arestas[i].second][arestas[i].first] << endl;
+                    no = subgradiente(tsp_heuristic, n, custos_arestas_proibidos, no.penalizadores, (*node));
 
                     vector<int> graus = calcula_graus(no.arestas);
 
                     if(no.cost < upper_bound){
                         tree.push_back(no);
+                        cout << no.cost << endl;
 
                     }
                 }  

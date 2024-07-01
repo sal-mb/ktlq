@@ -35,15 +35,27 @@ vector<int> calcula_graus_msp(vii msp, pair<int,int> melhores_nos){
     return graus;
 }
 
-double tamanho_do_passo(double upper_bound, double w, vector<int> graus){
+double tamanho_do_passo(double upper_bound, double w, vector<int> graus, Node &node){
     int acumulador = 0;
+    
+    node.feasible = true;
 
     for(int i = 0; i < graus.size(); i++){
-        acumulador += ((2 - graus[i]) * (2 - graus[i])); 
+
+        int sg = (2 - graus[i]) * (2 - graus[i]);
+
+        if(sg != 0){
+            // se algum dos nós tiver grau maior ou menor que 2
+            // a solucao nao eh viavel
+
+            acumulador += sg; 
+            
+            node.feasible = false;
+        }
     }
 
     if(acumulador == 0){
-        //criteiro de parada Ax = b
+        // caso divisao por 0
 
         return 0;
     }
@@ -141,14 +153,19 @@ Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb_, Node n
 
         double w = mst_cost + custos_penalizados[0][melhores_nos.first] + custos_penalizados[0][melhores_nos.second];
 
-        u = e * tamanho_do_passo(ub, w, graus);
+        u = e * tamanho_do_passo(ub, w, graus, best_node);
+
+        if(best_node.feasible){
+            // checa se a solucao eh feasible na funcao que calcula o "tamanho do passo"
+            break;
+        }
 
         altera_penalizadores(lmb, u, graus);
 
 
         if(w > best_node.cost){
             k = 0;
-           
+
             melhor_no(best_node, w, lmb, x_.getEdges(), melhores_nos);
 
         }else{
@@ -156,15 +173,8 @@ Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb_, Node n
 
             if(k >= 30){
                 k = 0;
-                e = e/2;
+                e /= 2;
             }
-        }
-
-        if(u < 0.00001){
-
-            melhor_no(best_node, w, lmb, x_.getEdges(), melhores_nos);
-            best_node.feasible = true;
-            break;
         }
 
         custos_penalizados = altera_custos(cost_matrix, lmb);

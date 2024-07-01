@@ -10,7 +10,7 @@
 typedef struct Node{
     vii arestas;
     vector<double> penalizadores;
-    vector<pair<int,int>> arcos_proibidos;
+    vector<pair<int,int>> arestas_proibidas;
     double cost;
 
     bool feasible = false;
@@ -20,8 +20,8 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n);
 
 vector<int> calcula_graus(vii arestas);
 
-vector<pair<int,int>> arcos_para_proibir(vii arestas);
+vector<pair<int,int>> arestas_para_proibir(vii arestas);
 
-void proibe_arcos(Node &no, vvi &cost_matrix);
+void proibe_arestas(Node &no, vvi &cost_matrix);
 
 #endif

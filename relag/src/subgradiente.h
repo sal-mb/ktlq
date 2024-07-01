@@ -13,7 +13,7 @@ Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb, Node no
 
 vector<int> calcula_graus_msp(vii msp, pair<int,int> best_nodes);
 
-double tamanho_do_passo(double upper_bound, double w, vector<int> graus);
+double tamanho_do_passo(double upper_bound, double w, vector<int> graus, Node &node);
 
 inline void altera_penalizadores(vector<double> &lmb, double u, vector<int> graus);
 
