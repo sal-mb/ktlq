@@ -86,7 +86,7 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
     Node best_node;
     
     while(!tree.empty()){
-
+        
         list<Node>::iterator node = branching ? tree.begin() : std::prev(tree.end()); //1 - bfs, 0 - dfs;
 
         if(node->cost <= upper_bound){
@@ -116,7 +116,7 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
                     //--------------------------------------------------------------------------------------------------------------------
 
                     //herda os arestas proibidas do nó pai
-                    
+
                     no.arestas_proibidas = arestas_proibidas;
 
                     //--------------------------------------------------------------------------------------------------------------------

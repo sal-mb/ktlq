@@ -3,11 +3,11 @@
 #include <fstream>
 #include <string>
 #include <unistd.h>
+#include "bnb.h"
 #include "data.h"
 #include <chrono>
 #include <vector>
 #include "Kruskal.h"
-#include "prints.h"
 
 using namespace std;
 
@@ -93,9 +93,8 @@ int main(int argc, char** argv) {
 
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
-	print_no(s_);
-
-	cout << "time " << (double)(duration.count())/10000 << endl;
+	std::cout << data->getInstanceName() << " - " << argv[2] << std::endl;
+	printf("%.3lf - %.1lf\n\n", (double) duration.count()/1000, s_.cost);
 
 	delete data;
 
