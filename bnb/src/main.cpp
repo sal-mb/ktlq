@@ -67,9 +67,17 @@ int main(int argc, char** argv) {
 		tsp_cost = stod(argv[3]);
 	}
 	
-	auto start = chrono::high_resolution_clock::now();
+    int branching = atoi(argv[2]);
 
-	Node s = bnb(&p, atoi(argv[2]) , cost, tsp_cost);
+	auto start = chrono::high_resolution_clock::now();
+    
+    Node s;
+    if(branching < 2){
+	    s = bnb(&p, atoi(argv[2]) , cost, tsp_cost);
+    }else{
+        s = bnb_bestbound(&p, cost, tsp_cost);
+    }
+
 
 	auto stop = chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
