@@ -8,6 +8,7 @@
 #include <chrono>
 #include <vector>
 #include "Kruskal.h"
+#include "prints.h"
 
 using namespace std;
 
@@ -31,28 +32,6 @@ double read_instance_cost(std::string instance_name){
 		exit(1);
 	}
 	return stod(word);
-}
-
-vvi cost_matrix_from_file(){
-
-	ifstream file("matriz_de_custos.txt");
-
-	vvi cost_matrix;
-
-	for(int i = 0; i < 5; i++){
-		vector<double> line_costs;
-
-		for(int j = 0; j < 5; j++){
-			double d;
-			file >> d;
-			line_costs.push_back(d);
-
-		}
-
-		cost_matrix.push_back(line_costs);
-	}
-
-	return cost_matrix;
 }
 
 int main(int argc, char** argv) {
@@ -93,7 +72,10 @@ int main(int argc, char** argv) {
 
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
-	std::cout << data->getInstanceName() << " - " << argv[2] << std::endl;
+	std::cout << data->getInstanceName() << " - " << argv[2] << "\n" << std::endl;
+
+	print_edges(s_.arestas);
+
 	printf("%.3lf - %.1lf\n\n", (double) duration.count()/1000, s_.cost);
 
 	delete data;

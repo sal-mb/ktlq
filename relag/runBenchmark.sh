@@ -4,7 +4,7 @@ make
 k=1
 
 
-echo "nome da instancia - branching (0 - dfs, 1 - bfs)"$'\n'"tempo - custo"$'\n' >> ./benchmark.txt
+echo "nome da instancia - branching (0 - dfs, 1 - bfs)"$'\n'"arestas"$'\n'"tempo - custo"$'\n' >> ./benchmark.txt
 
 for instance in instances/*; do
 	
