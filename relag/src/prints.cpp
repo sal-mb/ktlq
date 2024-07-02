@@ -8,11 +8,11 @@ void print_best_nodes_0(pair<int,int> best_nodes, vvi cost_matrix){
 
 void print_edges(vii edges){
 
-
-	cout << "\n ------ arestas ------ \n " << endl;	
-    for(int i = 0; i < edges.size(); i++){
-        cout << edges[i].first << " -> " << edges[i].second << " / "; 
+    for(int i = 0; i < edges.size()-1; i++){
+        cout << edges[i].first << " - " << edges[i].second << " / "; 
     }
+
+    cout << edges[edges.size()-1].first << " - " << edges[edges.size()-1].second << endl; 
 
     cout << "\n";
 }
