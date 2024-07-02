@@ -14,9 +14,16 @@ typedef struct Node{
     double cost;
 
     bool feasible = false;
+    bool operator<(const Node &n) const
+    {
+        return cost < n.cost;
+    }
+
 }Node;
 
 Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n);
+
+Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n);
 
 vector<int> calcula_graus(vii arestas);
 

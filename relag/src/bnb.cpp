@@ -6,6 +6,7 @@
 #include <vector>
 #include <unistd.h>
 #include "subgradiente.h"
+#include <queue>
 
 vector<int> calcula_graus(vii arestas){
 
@@ -84,20 +85,20 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
     //----------------------------------------------------------------------------
 
     Node best_node;
-    
+
     while(!tree.empty()){
-        
+
         list<Node>::iterator node = branching ? tree.begin() : std::prev(tree.end()); //1 - bfs, 0 - dfs;
 
         if(node->cost <= upper_bound){
-           
+
             if(node->feasible){
-                
+
                 upper_bound = node->cost;
                 best_node = (*node);
 
             }else{
-                
+
                 vector<pair<int,int>> arestas = arestas_para_proibir(node->arestas);
 
                 for(int i = 0; i < arestas.size(); i++){
@@ -112,7 +113,7 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
                     //executa o metodo do subgradiente com uma matriz de custos com as arestas proibidas e com os penalizadores do nó pai
 
                     no = subgradiente(tsp_heuristic, n, custos_arestas_proibidas, node->penalizadores);
-                    
+
                     //--------------------------------------------------------------------------------------------------------------------
 
                     //herda os arestas proibidas do nó pai
@@ -120,7 +121,7 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
                     no.arestas_proibidas = arestas_proibidas;
 
                     //--------------------------------------------------------------------------------------------------------------------
-                    
+
                     if(no.cost < upper_bound){
                         tree.push_back(no);
 
@@ -130,6 +131,80 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
         }
 
         tree.erase(node);
+    }
+
+    return best_node;
+}
+
+
+Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
+
+    // n = tamanho da instancia
+
+    //inicializacao da arvore
+
+    vector<double> lmb(n,0);
+
+    Node root; 
+    root = subgradiente(tsp_heuristic, n, cost_matrix, lmb);
+
+    std::priority_queue<Node> tree;
+    tree.push(root);
+
+    //----------------------------------------------------------------------------
+
+    //definindo o upperbound a partir da solucao heuristica disponivel
+
+    double upper_bound = tsp_heuristic;
+
+    //----------------------------------------------------------------------------
+
+    Node best_node;
+
+    while(!tree.empty()){
+
+        Node node = tree.top();
+        tree.pop();
+
+        if(node.cost <= upper_bound){
+
+            if(node.feasible){
+
+                upper_bound = node.cost;
+                best_node = node;
+
+            }else{
+
+                vector<pair<int,int>> arestas = arestas_para_proibir(node.arestas);
+
+                for(int i = 0; i < arestas.size(); i++){
+
+                    Node no;
+
+                    vii arestas_proibidas = node.arestas_proibidas; 
+                    arestas_proibidas.push_back(arestas[i]);
+
+                    vvi custos_arestas_proibidas = proibe_arestas(arestas_proibidas, cost_matrix);
+
+                    //executa o metodo do subgradiente com uma matriz de custos com as arestas proibidas e com os penalizadores do nó pai
+
+                    no = subgradiente(tsp_heuristic, n, custos_arestas_proibidas, node.penalizadores);
+
+                    //--------------------------------------------------------------------------------------------------------------------
+
+                    //herda os arestas proibidas do nó pai
+
+                    no.arestas_proibidas = arestas_proibidas;
+
+                    //--------------------------------------------------------------------------------------------------------------------
+
+                    if(no.cost < upper_bound){
+                        tree.push(no);
+
+                    }
+                }  
+            }
+        }
     }
 
     return best_node;
