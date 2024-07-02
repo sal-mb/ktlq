@@ -4,7 +4,7 @@ make
 k=1
 
 
-echo "nome da instancia - branching (0 - dfs, 1 - bfs)"$'\n'"tempo - custo"$'\n' >> ./benchmark.txt
+echo "nome da instancia - branching (0 - dfs, 1 - bfs, 2 - best bound)"$'\n'"tempo - custo"$'\n' >> ./benchmark.txt
 
 for instance in instances/*; do
 	
@@ -13,6 +13,7 @@ for instance in instances/*; do
 	
 	./relag ${instance} 0 >> ./benchmark.txt
 	./relag ${instance} 1 >> ./benchmark.txt
+	./relag ${instance} 2 >> ./benchmark.txt
 
 	k=$(($k+1))
 done
