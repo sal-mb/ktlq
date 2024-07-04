@@ -10,13 +10,13 @@
 typedef struct Node{
     vii arestas;
     vector<double> penalizadores;
-    vector<pair<int,int>> arestas_proibidas;
+    vvi matriz_de_custo;
     double cost;
 
     bool feasible = false;
     bool operator<(const Node &n) const
     {
-        return cost < n.cost;
+        return cost > n.cost;
     }
 
 }Node;

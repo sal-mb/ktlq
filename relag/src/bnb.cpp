@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "subgradiente.h"
 #include <queue>
+#include "prints.h"
 
 vector<int> calcula_graus(vii arestas){
 
@@ -70,12 +71,13 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
 
     vector<double> lmb(n,0);
 
-    Node root; 
+    Node root;
     root = subgradiente(tsp_heuristic, n, cost_matrix, lmb);
+    root.matriz_de_custo = cost_matrix;
 
     std::list<Node> tree;
     tree.push_back(root);
-
+    
     //----------------------------------------------------------------------------
 
     //definindo o upperbound a partir da solucao heuristica disponivel
@@ -87,7 +89,7 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
     Node best_node;
 
     while(!tree.empty()){
-
+        
         list<Node>::iterator node = branching ? tree.begin() : std::prev(tree.end()); //1 - bfs, 0 - dfs;
 
         if(node->cost <= upper_bound){
@@ -104,21 +106,21 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
                 for(int i = 0; i < arestas.size(); i++){
 
                     Node no;
+                    
+                    vvi matriz = node->matriz_de_custo;
 
-                    vii arestas_proibidas = node->arestas_proibidas; 
-                    arestas_proibidas.push_back(arestas[i]);
-
-                    vvi custos_arestas_proibidas = proibe_arestas(arestas_proibidas, cost_matrix);
-
+                    matriz[arestas[i].first][arestas[i].second] = 99999999;
+                    matriz[arestas[i].second][arestas[i].first] = 99999999;
+                    
                     //executa o metodo do subgradiente com uma matriz de custos com as arestas proibidas e com os penalizadores do nó pai
 
-                    no = subgradiente(tsp_heuristic, n, custos_arestas_proibidas, node->penalizadores);
+                    no = subgradiente(tsp_heuristic, n, matriz, node->penalizadores);
 
                     //--------------------------------------------------------------------------------------------------------------------
 
                     //herda os arestas proibidas do nó pai
 
-                    no.arestas_proibidas = arestas_proibidas;
+                    no.matriz_de_custo = matriz;
 
                     //--------------------------------------------------------------------------------------------------------------------
 
@@ -147,8 +149,9 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
 
     Node root; 
     root = subgradiente(tsp_heuristic, n, cost_matrix, lmb);
+    root.matriz_de_custo = cost_matrix;
 
-    std::priority_queue<Node> tree;
+    std::priority_queue<Node> tree, tree_cpy;
     tree.push(root);
 
     //----------------------------------------------------------------------------
@@ -180,31 +183,38 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
                 for(int i = 0; i < arestas.size(); i++){
 
                     Node no;
+                    
+                    vvi matriz = node.matriz_de_custo;
 
-                    vii arestas_proibidas = node.arestas_proibidas; 
-                    arestas_proibidas.push_back(arestas[i]);
-
-                    vvi custos_arestas_proibidas = proibe_arestas(arestas_proibidas, cost_matrix);
-
+                    matriz[arestas[i].first][arestas[i].second] = 99999999;
+                    matriz[arestas[i].second][arestas[i].first] = 99999999;
+                    
                     //executa o metodo do subgradiente com uma matriz de custos com as arestas proibidas e com os penalizadores do nó pai
 
-                    no = subgradiente(tsp_heuristic, n, custos_arestas_proibidas, node.penalizadores);
+                    no = subgradiente(tsp_heuristic, n, matriz, node.penalizadores);
 
                     //--------------------------------------------------------------------------------------------------------------------
 
                     //herda os arestas proibidas do nó pai
 
-                    no.arestas_proibidas = arestas_proibidas;
+                    no.matriz_de_custo = matriz;
 
                     //--------------------------------------------------------------------------------------------------------------------
 
                     if(no.cost < upper_bound){
                         tree.push(no);
+                        tree_cpy.push(no);
 
                     }
                 }  
             }
         }
+    }
+
+    for(int i = 0; i < tree_cpy.size(); i++){
+        Node n = tree_cpy.top();
+        cout << n.cost << endl;
+        tree_cpy.pop();
     }
 
     return best_node;
