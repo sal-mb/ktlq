@@ -211,11 +211,5 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
         }
     }
 
-    for(int i = 0; i < tree_cpy.size(); i++){
-        Node n = tree_cpy.top();
-        cout << n.cost << endl;
-        tree_cpy.pop();
-    }
-
     return best_node;
 }
