@@ -161,13 +161,13 @@ Node subgradiente(double ub, int n, vvi cost_matrix, vector<double> lmb){
             melhor_no(best_node, w, lmb, x_.getEdges(), melhores_nos);
             best_node.feasible = true;
             break;
-        
+            
+            //se passar de uma melhora inteira, pode parar o método
         }else if(ub - best_node.cost < 0.9999){
             best_node.cost = 999999999;
             break;
-
         }
-
+        
         altera_penalizadores(lmb, u, graus);
 
         custos_penalizados = altera_custos(cost_matrix, lmb);

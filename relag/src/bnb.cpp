@@ -113,7 +113,7 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
 
                     //executa o metodo do subgradiente com uma matriz de custos com as arestas proibidas e com os penalizadores do nó pai
 
-                    no = subgradiente(tsp_heuristic, n, custos_arestas_proibidas, node->penalizadores);
+                    no = subgradiente(upper_bound, n, custos_arestas_proibidas, node->penalizadores);
 
                     //--------------------------------------------------------------------------------------------------------------------
 
