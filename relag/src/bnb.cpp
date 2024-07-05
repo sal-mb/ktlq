@@ -1,4 +1,5 @@
-#include "bnb.h"
+
+#include <algorithm>
 #include <cstdio>
 #include <iterator>
 #include <list>
@@ -87,10 +88,10 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
     Node best_node;
 
     while(!tree.empty()){
-
+        
         list<Node>::iterator node = branching ? tree.begin() : std::prev(tree.end()); //1 - bfs, 0 - dfs;
 
-        if(node->cost <= upper_bound){
+        if(node->cost < upper_bound){
 
             if(node->feasible){
 
@@ -149,6 +150,7 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
     root = subgradiente(tsp_heuristic, n, cost_matrix, lmb);
 
     std::priority_queue<Node> tree;
+    std::priority_queue<Node> tree_cpy;
     tree.push(root);
 
     //----------------------------------------------------------------------------
@@ -166,7 +168,7 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
         Node node = tree.top();
         tree.pop();
 
-        if(node.cost <= upper_bound){
+        if(node.cost < upper_bound){
 
             if(node.feasible){
 
@@ -188,7 +190,7 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
 
                     //executa o metodo do subgradiente com uma matriz de custos com as arestas proibidas e com os penalizadores do nó pai
 
-                    no = subgradiente(tsp_heuristic, n, custos_arestas_proibidas, node.penalizadores);
+                    no = subgradiente(upper_bound, n, custos_arestas_proibidas, node.penalizadores);
 
                     //--------------------------------------------------------------------------------------------------------------------
 
@@ -200,7 +202,6 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
 
                     if(no.cost < upper_bound){
                         tree.push(no);
-
                     }
                 }  
             }

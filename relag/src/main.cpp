@@ -70,9 +70,9 @@ int main(int argc, char** argv) {
 	auto start = chrono::high_resolution_clock::now();
     
     if(branching >= 2){
-        s_ = bnb_bestbound(cost, tsp_cost+1, data->getDimension());
+        s_ = bnb_bestbound(cost, tsp_cost+2, data->getDimension());
     }else{
-	    s_ = bnb(branching, cost, tsp_cost+1, data->getDimension());
+	    s_ = bnb(branching, cost, tsp_cost+2, data->getDimension());
     }
 
 	auto stop = chrono::high_resolution_clock::now();
