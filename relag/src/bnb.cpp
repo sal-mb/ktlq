@@ -1,4 +1,5 @@
-#include "bnb.h"
+
+#include <algorithm>
 #include <cstdio>
 #include <iterator>
 #include <list>
@@ -92,7 +93,7 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
         
         list<Node>::iterator node = branching ? tree.begin() : std::prev(tree.end()); //1 - bfs, 0 - dfs;
 
-        if(node->cost <= upper_bound){
+        if(node->cost < upper_bound){
 
             if(node->feasible){
 
@@ -114,7 +115,11 @@ Node bnb(int branching, vvi cost_matrix, double tsp_heuristic, int n){
                     
                     //executa o metodo do subgradiente com uma matriz de custos com as arestas proibidas e com os penalizadores do nó pai
 
+<<<<<<< HEAD
                     no = subgradiente(tsp_heuristic, n, matriz, node->penalizadores);
+=======
+                    no = subgradiente(upper_bound, n, custos_arestas_proibidas, node->penalizadores);
+>>>>>>> 0a1bd31774e695dff47c09001e242e8a1a3d7efb
 
                     //--------------------------------------------------------------------------------------------------------------------
 
@@ -151,7 +156,12 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
     root = subgradiente(tsp_heuristic, n, cost_matrix, lmb);
     root.matriz_de_custo = cost_matrix;
 
+<<<<<<< HEAD
     std::priority_queue<Node> tree, tree_cpy;
+=======
+    std::priority_queue<Node> tree;
+    std::priority_queue<Node> tree_cpy;
+>>>>>>> 0a1bd31774e695dff47c09001e242e8a1a3d7efb
     tree.push(root);
 
     //----------------------------------------------------------------------------
@@ -169,7 +179,7 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
         Node node = tree.top();
         tree.pop();
 
-        if(node.cost <= upper_bound){
+        if(node.cost < upper_bound){
 
             if(node.feasible){
 
@@ -191,7 +201,11 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
                     
                     //executa o metodo do subgradiente com uma matriz de custos com as arestas proibidas e com os penalizadores do nó pai
 
+<<<<<<< HEAD
                     no = subgradiente(tsp_heuristic, n, matriz, node.penalizadores);
+=======
+                    no = subgradiente(upper_bound, n, custos_arestas_proibidas, node.penalizadores);
+>>>>>>> 0a1bd31774e695dff47c09001e242e8a1a3d7efb
 
                     //--------------------------------------------------------------------------------------------------------------------
 
@@ -203,8 +217,11 @@ Node bnb_bestbound(vvi cost_matrix, double tsp_heuristic, int n){
 
                     if(no.cost < upper_bound){
                         tree.push(no);
+<<<<<<< HEAD
                         tree_cpy.push(no);
 
+=======
+>>>>>>> 0a1bd31774e695dff47c09001e242e8a1a3d7efb
                     }
                 }  
             }

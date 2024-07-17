@@ -14,6 +14,8 @@ typedef struct Node{
     double cost;
 
     bool feasible = false;
+
+    // funcao para ordenar a priority_queue
     bool operator<(const Node &n) const
     {
         return cost > n.cost;
