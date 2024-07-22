@@ -1,11 +1,5 @@
-//---------------------------------------------------------------------------
-
-/***************************************************/
-/* Functions prototypes by Prof. Anand Subramanian */
-/***************************************************/
-
-#ifndef Separation_H
-#define Separation_H
+#ifndef MAXBACK_H
+#define MAXBACK_H
 
 #include <ilcplex/ilocplex.h>
 #include <iostream>
@@ -29,11 +23,10 @@ typedef struct{
 } vertex_type;
 
 extern vector <vector<int> > MaxBack(double** x, int n);
-extern vector <vector<int> > MinCut(double** x, int n);
 void print_edges(double **x, int n);
+double inline ComputeCutMin(double **x, int v);
 double inline CalculateMaxBackValue(double **x, vector<int> s, int v);
-vector<int> InitCandidateList(int n);
+vector<int> initCandidateList(int n);
 
 #endif
 
-//---------------------------------------------------------------------------
