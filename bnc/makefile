@@ -2,9 +2,9 @@
 BITS_OPTION = -m64
 
 ####diretorios com as libs do cplex
-CPLEXDIR  = /opt/ibm/ILOG/CPLEX_Studio1210/cplex
-CONCERTDIR = /opt/ibm/ILOG/CPLEX_Studio1210/concert
-   
+CPLEXDIR  = /opt/CPLEX_Studio201/cplex
+CONCERTDIR = /opt/CPLEX_Studio201/concert
+  
 CPLEXLIBDIR   = $(CPLEXDIR)/lib/x86-64_linux/static_pic
 CONCERTLIBDIR = $(CONCERTDIR)/lib/x86-64_linux/static_pic
 

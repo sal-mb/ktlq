@@ -25,8 +25,9 @@ void MyCutCallback::main()
 {
 	/**************** Getting the node's depth ****************/
 	//int depth = 0;
-	/*NodeInfo *data = dynamic_cast<NodeInfo*>(getNodeData());
+    //NodeInfo *data = dynamic_cast<NodeInfo*>(getNodeData());
 
+    /*
 	if (!data){
         if (NodeInfo::rootData == NULL)
             NodeInfo::initRootData();
@@ -35,7 +36,8 @@ void MyCutCallback::main()
     }
 	if (data) {
 		depth = data->getDepth();
-	}*/
+	}
+    */
 	int depth = getCurrentNodeDepth();
 	/**********************************************************/
 
@@ -49,8 +51,7 @@ void MyCutCallback::main()
 
 	double **x_edge = new double*[n];
  
-	for (int i = 0; i < n; i++) {
-		x_edge[i] = new double[n];
+	for (int i = 0; i < n; i++) { x_edge[i] = new double[n];
 	}
 
 	int l = 0;
@@ -63,8 +64,8 @@ void MyCutCallback::main()
 	cutSetPool = MaxBack(x_edge, n);
 	
 	if (cutSetPool.empty() && depth <= 7) {
+		cutSetPool = MinCut(x_edge, n);
 		//cutSetPool = MinCut(x_edge, n);
-		cutSetPool = MultipleMinCut(x_edge, n);
 	}
 
 	/***************** Creating the constraints ***************/
