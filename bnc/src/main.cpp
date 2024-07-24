@@ -106,7 +106,7 @@ void STSP_Solve(Data *data, string instanceName, double ub)
     }
 
     printResults(STSP, instanceName, timeAfter-timeBefore);
-	printSolution(STSP, x, dimension);
+	//printSolution(STSP, x, dimension);
 	//printResultsToFile(STSP, instanceName, timeAfter-timeBefore);
     /******************************************************/
 

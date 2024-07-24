@@ -17,6 +17,7 @@
 #include "auxFunctions.h"
 #include "separation.h"
 #include "NodeInfo.h"
+#include "MaxBack.h"
 
 /**************************** Cut callback ****************************/ 
 class MyCutCallback : public IloCplex::UserCutCallbackI 

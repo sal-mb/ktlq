@@ -15,18 +15,24 @@
 #define EPSILON 0.00000001
 
 using namespace std;
-
+ /*   
 typedef struct{
     vector<int> nodes;
     int id;
     bool is_vertexA;
 } vertex_type;
+*/
+
+typedef struct{
+    double backValue = 0;
+    int v;
+} item;
 
 extern vector <vector<int> > MaxBack(double** x, int n);
 void print_edges(double **x, int n);
-double inline ComputeCutMin(double **x, int v);
-double inline CalculateMaxBackValue(double **x, vector<int> s, int v);
-vector<int> initCandidateList(int n);
-
+double inline ComputeCutMin(double **x, vector< pair<int,int> > s);
+double inline CalculateMaxBackValue(double **x, vector< item > s, int v);
+vector<int> initCandidateList(double** x, int n);
+void computeBackValues(vector< item > &s, vector< item > s_, double** x);
 #endif
 

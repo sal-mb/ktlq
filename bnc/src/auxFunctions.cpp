@@ -61,22 +61,26 @@ void printSolution(IloCplex cplex, IloArray <IloBoolVarArray> x, int n)
 	}
 
 	/************** Getting the solution **************/
-	//cout << "\nSolution:" << endl;
+	cout << "\nSolution:" << endl;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			if(j > i){
+                cout << "X(" << i << "," << j << ") = " << cplex.getValue(x[i][j]) << " ";
+
 				sol[i][j] = 0;
 				if (cplex.getValue(x[i][j]) > 0.5) {
-					//cout << "X(" << i << "," << j << ") = " << cplex.getValue(x[i][j]) << " ";
+					cout << "X(" << i << "," << j << ") = " << cplex.getValue(x[i][j]) << " ";
 					sol[i][j] = 1;
 					sol[j][i] = 1;
 				}
 			}
 			else{
+                cout << "X(" << i << "," << j << ") = " << cplex.getValue(x[i][j]) << " ";
+
 				sol[i][j] = 0;
 			}
 		}
-		//cout << endl;
+		cout << endl;
 	}
 	/**************************************************/
 	

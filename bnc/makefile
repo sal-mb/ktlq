@@ -2,8 +2,8 @@
 BITS_OPTION = -m64
 
 ####diretorios com as libs do cplex
-CPLEXDIR  = /opt/CPLEX_Studio201/cplex
-CONCERTDIR = /opt/CPLEX_Studio201/concert
+CPLEXDIR  = /opt/ibm/ILOG/CPLEX_Studio201/cplex
+CONCERTDIR = /opt/ibm/ILOG/CPLEX_Studio201/concert
   
 CPLEXLIBDIR   = $(CPLEXDIR)/lib/x86-64_linux/static_pic
 CONCERTLIBDIR = $(CONCERTDIR)/lib/x86-64_linux/static_pic
@@ -13,7 +13,7 @@ CPPC = g++
 #############################
 
 #### opcoes de compilacao e includes
-CCOPT = $(BITS_OPTION) -O3 -fPIC -fexceptions -DNDEBUG -DIL_STD -std=c++0x
+CCOPT = $(BITS_OPTION) -fPIC -fexceptions -O3 -DNDEBUG -DIL_STD -std=c++0x
 CONCERTINCDIR = $(CONCERTDIR)/include
 CPLEXINCDIR   = $(CPLEXDIR)/include
 CCFLAGS = $(CCOPT) -I$(CPLEXINCDIR) -I$(CONCERTINCDIR) -I./include

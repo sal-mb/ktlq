@@ -1,4 +1,5 @@
 #include "MyLazyCallback.h"
+#include "MaxBack.h"
 
 /********************************************** Class' Constructor **********************************************/
 MyLazyCallback::MyLazyCallback(IloEnv env, const IloArray<IloBoolVarArray>& x_ref, int nodes) : IloCplex::LazyConstraintCallbackI(env), x(x_ref), x_vars(env), n(nodes)
