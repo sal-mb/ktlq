@@ -30,11 +30,5 @@ typedef struct{
 
 extern vector <vector<int> > MaxBack(double** x, int n);
 void print_edges(double **x, int n);
-double inline ComputeCutMin(double **x, vector< pair<int,int> > s);
-double inline CalculateMaxBackValue(double **x, vector< item > s, int v);
-vector<int> initCandidateList(double** x, int n);
-void computeBackValues(vector< item > &s, vector< item > s_, double** x);
-void inline updateBackValues(vector< item > &s, int v, double** x);
 
 #endif
-

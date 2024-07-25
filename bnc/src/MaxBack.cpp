@@ -12,42 +12,6 @@ void print_edges(double **x, int n){
     }
 }
 
-
-double inline CalculateMaxBackValue(double **x, vector< item > s, int v){
-    //b(v) = sum{x_uv}
-
-    double b = 0;
-
-    int max_i, max_j;
-    for(int i = 0; i < s.size(); i++){
-
-        if(v < s[i].v){
-            b += x[v][s[i].v];
-
-        }else{
-            b += x[s[i].v][v];
-        }
-
-    }
-
-    return b;
-}
-
-vector< item > InitCandidateList(double** x, int n){
-
-    vector< item > cl;
-    item v;
-    v.v = 0;
-
-    cout << "initializing candidate list..;\n" << endl;
-    for(int i = 1; i < n; i++){
-        v.v = i;
-        cl.push_back(v);
-    }
-
-    return cl;
-}
-
 double inline computeCutMinV(double** x, vector< bool > s, int v){
 
     double cutminv = 0;
@@ -72,7 +36,7 @@ double inline ComputeCutMin(double** x, vector< bool > s){
     cout << "computing mincut value...\n" << endl;
     for(int i = 0; i < s.size(); i++){
         if(s[i] == true){
-            cutmin += computeCutMinV(x, s, v);
+            cutmin += computeCutMinV(x, s, i);
         }
     }
 
@@ -80,16 +44,42 @@ double inline ComputeCutMin(double** x, vector< bool > s){
     return cutmin;
 }
 
-void computeBackValues(vector< item > &s, vector< item > s_, double** x){
+double inline CalculateMaxBackValue(double **x, vector< bool > s, int v){
+    //b(v) = sum{x_uv}
+
+    double b = 0;
+
+    int max_i, max_j;
+    for(int i = 0; i < s.size(); i++){
+        
+        if(s[i] == true){
+            if(v < i){
+                b += x[v][i];
+
+            }else{
+                b += x[i][v];
+            }
+
+        }
+        
+    }
+    
+    return b;
+}
+void computeBackValues(vector< bool > &s, vector< item > &backValues, double** x){
     cout << "computing maxBack values of s...\n" << endl;
+    
+    backValues.clear();
 
     for(int i = 0; i < s.size(); i++){
-        s[i].backValue = CalculateMaxBackValue(x, s_, s[i].v);
-        cout << "node: " << s[i].v << ", maxback value: " << s[i].backValue << endl;
+        if(s[i] == false){
+            item v;
+            v.v = i;
+            v.backValue = CalculateMaxBackValue(x, s, i);
+
+            backValues.push_back(v);
+        }
     }
-
-    std::sort(s.begin(), s.end(), ordena_por_maxback);
-
 }
 
 void inline updateBackValues(vector< item > &s, int v, double** x){
@@ -104,25 +94,23 @@ void inline updateBackValues(vector< item > &s, int v, double** x){
 }
 
 vector< vector<int> > MaxBack(double **x,  int n){
-    
 
     vector< vector<int> > subtours;
     vector< bool > s_0(n,false);
-    vector< item > backValues(n-1);
+    vector< item > backValues;
     double cutval, cutmin;
 
-    s_0[0] = true;
+    s_0[0] = true;  
 
     cutmin = cutval = ComputeCutMin(x, s_0);
-    cout << cutmin << endl;   
-        
+    cout << cutmin << endl; 
 
+    computeBackValues(s_0, backValues, x);
 
-    for(int i = 0; i < s_min.size(); i++){
-        cout << s_min[i].v << " -> ";
+    for(int i = 0; i < backValues.size(); i++){
+       cout << "backValue: " << backValues[i].backValue << endl;
+       cout << "v: " << backValues[i].v << endl;
     }
-
-    
 
     return subtours;
 }

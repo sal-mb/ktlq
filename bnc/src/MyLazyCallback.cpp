@@ -42,9 +42,9 @@ void MyLazyCallback::main()
 	for(int i = 0; i < n; i++) {
 		for(int j = i+1; j < n; j++) {
 			x_edge[i][j] = x_vals[l++];
-            cout << x_edge[i][j] << " - ";
+           // cout << x_edge[i][j] << " - ";
 		}
-        cout << endl;
+        // cout << endl;
 	}
 	
 	cutSetPool = MaxBack(x_edge, n);
