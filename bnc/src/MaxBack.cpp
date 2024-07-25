@@ -48,13 +48,32 @@ vector< item > InitCandidateList(double** x, int n){
     return cl;
 }
 
-double inline ComputeCutMin(double **x, vector< item > s, vector < item > s_){
+double inline computeCutMinV(double** x, vector< bool > s, int v){
+
+    double cutminv = 0;
+
+    for(int i = 0; i < s.size(); i++){
+        if(s[i] == false){
+            if(v > i){
+                cutminv += x[i][v];
+            }else{
+                cutminv += x[v][i];
+            }
+        }
+    }
+
+    return cutminv;
+}
+
+double inline ComputeCutMin(double** x, vector< bool > s){
 
     double cutmin = 0;
 
     cout << "computing mincut value...\n" << endl;
     for(int i = 0; i < s.size(); i++){
-        cutmin += CalculateMaxBackValue(x, s_, s[i].v);
+        if(s[i] == true){
+            cutmin += computeCutMinV(x, s, v);
+        }
     }
 
     cout << "cutmin value: " << cutmin << endl;
@@ -88,40 +107,16 @@ vector< vector<int> > MaxBack(double **x,  int n){
     
 
     vector< vector<int> > subtours;
-    vector< pair<int,int> > arestas_s_0;
-    vector< item > s_0;
-    vector< item > s_min;
+    vector< bool > s_0(n,false);
+    vector< item > backValues(n-1);
+    double cutval, cutmin;
 
-    item v;
-    v.v = 0;
-    s_0.push_back(v);
+    s_0[0] = true;
 
-    //cl = nos nao pertecentes a s_0;
-    vector< item > cl = InitCandidateList(x,n);
-
-    computeBackValues(cl, s_0, x);
-
-    double cutmin, cutval;
-
-    cutmin = cutval = ComputeCutMin(x, s_0, cl);
-    
-    while(s_0.size() <= n){
+    cutmin = cutval = ComputeCutMin(x, s_0);
+    cout << cutmin << endl;   
         
-        item v = cl.front();
-        cl.erase(cl.begin());
-        s_0.push_back(v);
-        //s_0 = vector<item>(cl.begin, cl.begin+n);
 
-        cutval = cutval + 2 - 2 * CalculateMaxBackValue(x, s_0, v.v);
-        cout << v.v << endl;
-        updateBackValues(cl, v.v, x);
-
-        if(cutval < cutmin){
-            cutmin = cutval;
-            s_min = vector<item>(s_0);
-        }
-
-    }
 
     for(int i = 0; i < s_min.size(); i++){
         cout << s_min[i].v << " -> ";
