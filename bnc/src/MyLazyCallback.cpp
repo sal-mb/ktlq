@@ -1,6 +1,4 @@
 #include "MyLazyCallback.h"
-#include "MaxBack.h"
-
 /********************************************** Class' Constructor **********************************************/
 MyLazyCallback::MyLazyCallback(IloEnv env, const IloArray<IloBoolVarArray>& x_ref, int nodes) : IloCplex::LazyConstraintCallbackI(env), x(x_ref), x_vars(env), n(nodes)
 {
@@ -42,9 +40,7 @@ void MyLazyCallback::main()
 	for(int i = 0; i < n; i++) {
 		for(int j = i+1; j < n; j++) {
 			x_edge[i][j] = x_vals[l++];
-           // cout << x_edge[i][j] << " - ";
 		}
-        // cout << endl;
 	}
 	
 	cutSetPool = MaxBack(x_edge, n);

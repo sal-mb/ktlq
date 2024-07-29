@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <exception>
 #include "auxFunctions.h"
-#include "separation.h"
+#include "MaxBack.h"
 
 /**************************** Lazy callback ****************************/ 
 class MyLazyCallback : public IloCplex::LazyConstraintCallbackI 

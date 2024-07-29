@@ -26,6 +26,7 @@ typedef struct{
 typedef struct{
     double backValue = 0;
     int v;
+    
 } item;
 
 extern vector <vector<int> > MaxBack(double** x, int n);

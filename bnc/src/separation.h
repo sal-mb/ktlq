@@ -28,9 +28,6 @@ typedef struct{
     bool is_vertexA;
 } vertex_type;
 
-void print_edges(double **x, int n);
-double inline CalculateMaxBackValue(double **x, vector<int> s, int v);
-vector<int> InitCandidateList(int n);
 
 #endif
 
