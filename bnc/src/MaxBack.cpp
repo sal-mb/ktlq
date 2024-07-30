@@ -141,7 +141,7 @@ vector< vector<int> > MaxBack(double **x,  int n){
     vector< bool > s_0(n);
     int initial_node = 0;
 
-    print_edges(x, n);
+    //print_edges(x, n);
 
     while(initial_node != -1){
         
@@ -152,7 +152,6 @@ vector< vector<int> > MaxBack(double **x,  int n){
         vector< item > backValues;
         double cutval, cutmin;
         int s_0_count = 1;
-        int s_min_count = 0;
 
         cutmin = cutval = ComputeCutMin(x, s_0);
         cout << cutmin << endl; 
@@ -176,10 +175,14 @@ vector< vector<int> > MaxBack(double **x,  int n){
                 cout << "entrou if: " << s_0_count << endl;
                 cutmin = cutval;
                 s_min = s_0;
-                s_min_count = s_0_count;
             }
         }
         vector< int > s_min_int( boolToIntSolution(s_min) );
+        
+        if(s_min_int.size() == n){
+            return {};
+        }
+
         setVerticesTrue(s_in_subtours, s_min_int);
         subtours.push_back(s_min_int);
 

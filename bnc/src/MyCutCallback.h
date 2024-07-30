@@ -16,6 +16,7 @@
 #include <exception>
 #include "auxFunctions.h"
 #include "MaxBack.h"
+#include "MinCut.h"
 #include "NodeInfo.h"
 
 /**************************** Cut callback ****************************/ 
