@@ -58,12 +58,11 @@ double inline CalculateMaxBackValue(double **x, vector< bool > s, int v, int in)
 
     double b = 0;
 
-    int max_i, max_j;
         
-    if(v < i){
-        b += x[v][i];
+    if(v < in){
+        b += x[v][in];
     }else{
-        b += x[i][v];
+        b += x[in][v];
     }
     
     return b;

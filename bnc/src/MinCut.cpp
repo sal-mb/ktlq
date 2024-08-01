@@ -3,139 +3,178 @@
 
 bool orderByWeight(vertex a, vertex b){ return a.weight < b.weight; }
 
-bool in_vector(vector< int > v, int i){ return std::find(v.begin(), v.end(), i); }
+vector< int > initV(int n, int s, int t){
 
-double inline computeWeight(vector< bool > &A, double** x, int v){
-
-    double weight = 0;
-
-    for(int i = 0; i < A.size(); i++){
-
-        if(A[i] == true){
-            if(v > i){
-                weight += x[i][v];
-            }else{
-                weight += x[v][i];
-            }        
-        }
+    vector< int > V;
+    
+    for(int i = 0; i < n; i++){
+        V.push_back(i);
     }
 
-    return weight;
+    V[t] = V[s];
+
+    return V;
+    
+}
+
+void attX(double **x, int n, int s, int t){
+    
+    if(s == t){
+        return;
+    }
+
+    for(int i = 0; i < s-1; i++){
+
+        x[i][s] += x[i][t];
+    }
+
+    for(int i = s+1; i < t; i++){
+
+        x[s][i] += x[i][t];
+    }
+
+    for(int i = s+1; i < n; i++){
+
+        x[s][i] += x[t][i];
+    }
+
+    for(int i = 0; i < s; i++){
+        x[i][s] += x[i][t];
+    }
+
+
+    x[s][s] = 0;
+    x[t][t] = 0;
+
 }
 
 /*
-int inline insertNodeOnA(vector< bool > &A, double** x){
+double computeWeight(vector< int > V, int v, double **x){
 
-    double max_weight = 0;
-    double max_v = -1;
-    for(int i = 0; i < A.size(); i++){
-        if(A[i] == false){
-            double weight = computeWeight(A,x,i);
-            if(weight >= max_weight){
-                max_weight = weight;
-                max_v = i;
-            }
+    double w = 0;
+
+    for(int i = 1; i < V.size(); i++){
+
+        if(V[i] > v){
+            w += x[v][V[i]];
+        }else{
+            w += x[V[i]][v];
         }
     }
+}*/
 
-    cout << "max_weight: " << max_weight << endl;
-    return max_v;
-}
-*/
+void initWeights(vector< int > V, vector< vertex > &W, double **x){
+    
+    for(int i = 1 ; i < V.size(); i++){
 
-void inline initWeights(vector< bool > &A, vector< vertex > &V_, vector< int > merged_vertices, double** x){
-
-    double max_weight = 0;
-    double max_v = -1;
-
-    for(int i = 1; i < A.size(); i++){
-        
         vertex v;
         
-        if(find(merged_vertices.begin(), merged_vertices.end()))
-        v.v = i;
-        v.weight = computeWeight(A,x,i);
+        
+        v.v = V[i];
+        v.weight = x[0][V[i]];
+        
+        // se o v no vertor for menor q o i, significa q temos um v merged
+        // portanto temos que somar o peso no v merged correto
 
-        V_.push_back(v);
-
+        if(V[i] == i){
+            W.push_back(v);
+        }
     }
 
-    make_heap(V_.begin(), V_.end(), orderByWeight);
+    make_heap(W.begin(), W.end(), orderByWeight);
 }
 
-void inline updateWeights(vector< vertex > &V_, double**x, int v){
+void updateWeights(vector< vertex > &W, double** x, int vi){
 
-    for(vertex &w : V_){
-        if(w.v > v){
+    for(vertex &w : W){
+        
+        if(w.v > vi){
 
-            w.weight += x[v][w.v];
+            w.weight += x[vi][w.v];
         }else{
 
-            w.weight += x[w.v][v];
+            w.weight += x[w.v][vi];
         }
+
     }
-    make_heap(V_.begin(), V_.end(), orderByWeight);
+
+    make_heap(W.begin(), W.end(), orderByWeight);
 }
 
-void print_A(vector< bool > A){
+st MinCutPhase(double **x, vector< int >V){
+    
+    vector< vertex > W;
+    vector< int > V_ = {0};
 
-    for(int i = 0; i < A.size(); i++){
+    initWeights(V, W, x);
+    
+    int Vcount = 1;
 
-        if(A[i] == true){
-            cout << i << " -> ";
-        }
-    }
-    cout << endl;
-}
-
-pair<int,int> MinCutPhase(double** x, int n){
-
-    vector< bool > A(n,false);
-    vector< vertex > V_;
-
-    int A_count = 1;
-    A[0] = true;
-
-    print_edges(x, n);
-    initWeights(A, V_, x);
-
-
+    double cut_of_the_phase;
     int s = 0, t = 0;
-    double cut_of_the_pase = 0;
+    
+    int n = W.size()+1;
 
-    while(A_count < n){
+    while(Vcount < n){
+        
+        vertex v_to_insert = W[0];
 
-        vertex v_to_insert = V_[0];
-
-        if(A_count == n-1){
+        if(Vcount == n-1){
             t = v_to_insert.v;
-            cut_of_the_pase = v_to_insert.weight;
+            cut_of_the_phase = v_to_insert.weight;
         }else{
             s = v_to_insert.v;
         }
-        pop_heap(V_.begin(), V_.end(), orderByWeight);
-        V_.pop_back();
+        pop_heap(W.begin(), W.end(), orderByWeight);
+        W.pop_back();
+        
+        //cout << "v: " << v_to_insert.v << ", w: " << v_to_insert.weight << endl;
+        V_.push_back(v_to_insert.v);
+        /*
+        for(auto v : V_){
+            cout << " -> " << v;
+        }*/
+        updateWeights(W, x, v_to_insert.v);
+        
+        Vcount++;
+    }
+    
+    st st;
 
-        //        cout << "v insert: " << v_to_insert.v << ", w: " << v_to_insert.weight << endl;
-        A[v_to_insert.v] = true;
-
-        updateWeights(V_, x, v_to_insert.v);
-
-
-        A_count++;
-
+    if(s > t){
+        st.t = s;
+        st.s = t;
+        st.cotp = cut_of_the_phase;
+    }else{
+        st.t = t;
+        st.s = s;
+        st.cotp = cut_of_the_phase;
     }
 
-    return make_pair(s,t);
+    return st;
 }
 
-
 extern vector< vector<int> > MinCut(double** x, int n){
-
-    pair<int,int> st = MinCutPhase(x,n);
     
-    vector< int > merged_vertices;
-    cout << "s: " << st.first << ", t: " << st.second << endl;
+    vector< int > V = initV(n, 0, 0);
+    
+    st st;
+    st = MinCutPhase(x, V);
 
+    cout << "s: " << st.s << ", t: " << st.t << ", cotp: " << st.cotp << endl;
+
+    print_edges(x,n);
+    getchar();
+    attX(x,n,st.s, st.t);
+    
+    print_edges(x,n);
+    
+    getchar();
+    V = initV(n, st.s, st.t);
+
+    st = MinCutPhase(x, V);
+
+    cout << "s: " << st.s << ", t: " << st.t << ", cotp: " << st.cotp << endl;
+    getchar();
     return {};
 }

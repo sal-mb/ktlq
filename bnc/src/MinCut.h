@@ -18,10 +18,19 @@ using namespace std;
 
 typedef struct{
 
-    vector< int > v;
+    int v = 0;
     double weight = -1;
 
-}vertice;
+} vertex;
+
+typedef struct{
+    
+    int s;
+    int t;
+    double cotp; //cut of the phase
+    
+}st;
 
 extern vector< vector<int> > MinCut(double** x, int n);
+void print_edges(double **x, int n);
 #endif
