@@ -53,30 +53,23 @@ double inline ComputeCutMin(double** x, vector< bool > s){
     return cutmin;
 }
 
-double inline CalculateMaxBackValue(double **x, vector< bool > s, int v){
+double inline CalculateMaxBackValue(double **x, vector< bool > s, int v, int in){
     //b(v) = sum{x_uv}
 
     double b = 0;
 
     int max_i, max_j;
-    for(int i = 0; i < s.size(); i++){
         
-        if(s[i] == true){
-            if(v < i){
-                b += x[v][i];
-
-            }else{
-                b += x[i][v];
-            }
-
-        }
-        
+    if(v < i){
+        b += x[v][i];
+    }else{
+        b += x[i][v];
     }
     
     return b;
 }
 
-void computeBackValues(vector< bool > &s, vector< item > &backValues, double** x){
+void computeBackValues(vector< bool > &s, vector< item > &backValues, int initial_node, double** x){
     cout << "computing maxBack values of s...\n" << endl;
     
     backValues.clear();
@@ -85,7 +78,7 @@ void computeBackValues(vector< bool > &s, vector< item > &backValues, double** x
         if(s[i] == false){
             item v;
             v.v = i;
-            v.backValue = CalculateMaxBackValue(x, s, i);
+            v.backValue = CalculateMaxBackValue(x, s, i, initial_node);
 
             backValues.push_back(v);
         }
@@ -156,7 +149,7 @@ vector< vector<int> > MaxBack(double **x,  int n){
         cutmin = cutval = ComputeCutMin(x, s_0);
         cout << cutmin << endl; 
 
-        computeBackValues(s_0, backValues, x);
+        computeBackValues(s_0, backValues, initial_node, x);
         
         while(s_0_count < n){
             item v = backValues[0];

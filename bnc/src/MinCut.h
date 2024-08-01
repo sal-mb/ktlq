@@ -16,5 +16,12 @@
 
 using namespace std;
 
+typedef struct{
+
+    vector< int > v;
+    double weight = -1;
+
+}vertice;
+
 extern vector< vector<int> > MinCut(double** x, int n);
 #endif
