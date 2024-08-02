@@ -31,6 +31,14 @@ typedef struct{
     
 }st;
 
+typedef struct{
+    
+    vector< int > s_;
+    double cut_cost;
+
+}cut;
+
 extern vector< vector<int> > MinCut(double** x, int n);
 void print_edges(double **x, int n);
+
 #endif

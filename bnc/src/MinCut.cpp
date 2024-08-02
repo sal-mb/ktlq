@@ -3,15 +3,13 @@
 
 bool orderByWeight(vertex a, vertex b){ return a.weight < b.weight; }
 
-vector< int > initV(int n, int s, int t){
+vector< int > initV(int n){
 
     vector< int > V;
     
     for(int i = 0; i < n; i++){
         V.push_back(i);
     }
-
-    V[t] = V[s];
 
     return V;
     
@@ -48,30 +46,19 @@ void attX(double **x, int n, int s, int t){
 
 }
 
-/*
-double computeWeight(vector< int > V, int v, double **x){
-
-    double w = 0;
-
-    for(int i = 1; i < V.size(); i++){
-
-        if(V[i] > v){
-            w += x[v][V[i]];
-        }else{
-            w += x[V[i]][v];
-        }
-    }
-}*/
-
-void initWeights(vector< int > V, vector< vertex > &W, double **x){
+void initWeights(vector< int > V, vector< vertex > &W, double **x, int in){
     
-    for(int i = 1 ; i < V.size(); i++){
+    for(int i = 0; i < V.size(); i++){
 
         vertex v;
         
         
         v.v = V[i];
-        v.weight = x[0][V[i]];
+        if(in > V[i]){
+            v.weight = x[V[i]][in];
+        }else{
+            v.weight = x[in][V[i]];
+        }
         
         // se o v no vertor for menor q o i, significa q temos um v merged
         // portanto temos que somar o peso no v merged correto
@@ -101,12 +88,28 @@ void updateWeights(vector< vertex > &W, double** x, int vi){
     make_heap(W.begin(), W.end(), orderByWeight);
 }
 
-st MinCutPhase(double **x, vector< int >V){
+cut getCut(vector< int > V, int s, int cut_cost){
+
+    cut cut;
+    cut.cut_cost = cut_cost;
+
+    for(int i = 0; i < V.size(); i++){
+        if(V[i] == s){
+            cut.s_.push_back(i);
+        }
+    }
+
+    return cut;
+}
+
+st MinCutPhase(double **x, vector< int >V, int initial_node){
     
     vector< vertex > W;
-    vector< int > V_ = {0};
+    vector< int > V_;
+    
+    V_.push_back(initial_node);
 
-    initWeights(V, W, x);
+    initWeights(V, W, x, initial_node);
     
     int Vcount = 1;
 
@@ -114,7 +117,7 @@ st MinCutPhase(double **x, vector< int >V){
     int s = 0, t = 0;
     
     int n = W.size()+1;
-
+    
     while(Vcount < n){
         
         vertex v_to_insert = W[0];
@@ -154,27 +157,83 @@ st MinCutPhase(double **x, vector< int >V){
     return st;
 }
 
+cut getMinCut(double** x, int n, int initial_node){
+    vector< int > V = initV(n);
+    
+    cut min_cut;
+    cut current_cut;
+    
+    min_cut.cut_cost = 9999999;
+
+    int Vcount = n;
+    st st;
+    
+    while(Vcount > 1){
+        
+        st = MinCutPhase(x,V,initial_node);
+        
+        current_cut = getCut(V, st.s, st.cotp);
+        
+        if(current_cut.cut_cost < min_cut.cut_cost){
+
+            min_cut = current_cut;
+        }
+
+        V[st.t] = V[st.s];
+
+        attX(x,n, st.s, st.t);
+        
+        Vcount--;
+    }
+    
+    return min_cut;
+}
+
+double** cloneX(double** x, int n){
+
+	double **x_edge = new double*[n];
+ 
+	for (int i = 0; i < n; i++) {
+		x_edge[i] = new double[n];
+	}
+
+	for(int i = 0; i < n; i++) {
+		for(int j = i; j < n; j++) {
+			x_edge[i][j] = x[i][j];
+		}
+	}
+
+    return x_edge;
+}
+
 extern vector< vector<int> > MinCut(double** x, int n){
     
-    vector< int > V = initV(n, 0, 0);
+    vector< vector<int> > subtours;
+    vector< bool > s_in_subtours(n,false);
+    int initial_node = 0;
     
-    st st;
-    st = MinCutPhase(x, V);
+    subtours.clear();
 
-    cout << "s: " << st.s << ", t: " << st.t << ", cotp: " << st.cotp << endl;
+    while(initial_node != -1){
+        
+        double** x_ = cloneX(x, n);
 
-    print_edges(x,n);
-    getchar();
-    attX(x,n,st.s, st.t);
-    
-    print_edges(x,n);
-    
-    getchar();
-    V = initV(n, st.s, st.t);
+        cut s = getMinCut(x_,n,initial_node);
+        
+        setVerticesTrue(s_in_subtours, s.s_);
 
-    st = MinCutPhase(x, V);
+        if(s.cut_cost < 2){
+            subtours.push_back(s.s_);
+        }
+        
+        initial_node = getInitialNode(s_in_subtours);
 
-    cout << "s: " << st.s << ", t: " << st.t << ", cotp: " << st.cotp << endl;
-    getchar();
-    return {};
+        for(auto v : s.s_){
+            cout << " -> " << v;
+        }
+        getchar();
+    }
+
+    return subtours;
+
 }

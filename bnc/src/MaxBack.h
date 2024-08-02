@@ -30,6 +30,8 @@ typedef struct{
 } item;
 
 extern vector <vector<int> > MaxBack(double** x, int n);
+int getInitialNode(vector< bool > s);
+void setVerticesTrue(vector< bool > &s, vector< int > s_0);
 void print_edges(double **x, int n);
 
 #endif
