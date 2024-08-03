@@ -3,25 +3,25 @@
 /********************************************** Class' Constructor **********************************************/
 MyCutCallback::MyCutCallback(IloEnv env, const IloArray<IloBoolVarArray>& x_ref, int nodes) : IloCplex::UserCutCallbackI(env), x(x_ref), x_vars(env), n(nodes)
 {
-	/********** Filling x_vars **********/ 
+	/********** Filling x_vars **********/
 	for(int i = 0; i < n; i++) {
 		for(int j = i + 1; j < n; j++){
 			x_vars.add(x[i][j]);
 		}
 	}
 	/************************************/
-} 
+}
 /*****************************************************************************************************************/
 
 /************************** Return a callback copy. This method is a CPLEX requirement ***************************/
-IloCplex::CallbackI* MyCutCallback::duplicateCallback() const 
-{ 
-   return new (getEnv()) MyCutCallback(getEnv(), x, n); 
+IloCplex::CallbackI* MyCutCallback::duplicateCallback() const
+{
+   return new (getEnv()) MyCutCallback(getEnv(), x, n);
 }
 /*****************************************************************************************************************/
 
 /************************************ Callback's code that is runned by CPLEX ************************************/
-void MyCutCallback::main() 
+void MyCutCallback::main()
 {
 	/**************** Getting the node's depth ****************/
 	//int depth = 0;
@@ -30,7 +30,7 @@ void MyCutCallback::main()
 	if (!data){
         if (NodeInfo::rootData == NULL)
             NodeInfo::initRootData();
-        
+
 		data = NodeInfo::rootData;
     }
 	if (data) {
@@ -45,10 +45,10 @@ void MyCutCallback::main()
 	/**********************************************************/
 
 	vector< vector<int> > cutSetPool;
-	vector<IloConstraint> cons; 
+	vector<IloConstraint> cons;
 
 	double **x_edge = new double*[n];
- 
+
 	for (int i = 0; i < n; i++) {
 		x_edge[i] = new double[n];
 	}
@@ -59,13 +59,13 @@ void MyCutCallback::main()
 			x_edge[i][j] = x_vals[l++];
 		}
 	}
-	
+
 	cutSetPool = MaxBack(x_edge, n);
-	
+
 	//cutSetPool = MinCut(x_edge, n);
 
 	if (cutSetPool.empty() && depth <= 7) {
-		//cutSetPool = MinCut(x_edge, n);
+		cutSetPool = MinCut(x_edge, n);
 		//cutSetPool = MultipleMinCut(x_edge, n);
 	}
 

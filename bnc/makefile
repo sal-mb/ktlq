@@ -2,9 +2,9 @@
 BITS_OPTION = -m64
 
 ####diretorios com as libs do cplex
-CPLEXDIR  = /opt/ibm/ILOG/CPLEX_Studio201/cplex
-CONCERTDIR = /opt/ibm/ILOG/CPLEX_Studio201/concert
-  
+CPLEXDIR  = /opt/ibm/ILOG/CPLEX_Studio2211/cplex
+CONCERTDIR = /opt/ibm/ILOG/CPLEX_Studio2211/concert
+
 CPLEXLIBDIR   = $(CPLEXDIR)/lib/x86-64_linux/static_pic
 CONCERTLIBDIR = $(CONCERTDIR)/lib/x86-64_linux/static_pic
 
@@ -20,7 +20,7 @@ CCFLAGS = $(CCOPT) -I$(CPLEXINCDIR) -I$(CONCERTINCDIR) -I./include
 #############################
 
 #### flags do linker
-CCLNFLAGS = -L$(CPLEXLIBDIR) -lilocplex -lcplex -L$(CONCERTLIBDIR) -lconcert -lm -lpthread -ldl 
+CCLNFLAGS = -L$(CPLEXLIBDIR) -lilocplex -lcplex -L$(CONCERTLIBDIR) -lconcert -lm -lpthread -ldl
 #############################
 
 #### diretorios com os source files e com os objs files
@@ -34,7 +34,7 @@ OBJS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
 #############################
 
 #### regra principal, gera o executavel
-bc: $(OBJS) 
+bc: $(OBJS)
 	@echo  "\033[31m \nLinking all objects files: \033[0m"
 	$(CPPC) $(BITS_OPTION) $(OBJS) -o $@ $(CCLNFLAGS)
 ############################

@@ -15,7 +15,7 @@
 #define EPSILON 0.00000001
 
 using namespace std;
- /*   
+ /*
 typedef struct{
     vector<int> nodes;
     int id;
@@ -26,12 +26,11 @@ typedef struct{
 typedef struct{
     double backValue = 0;
     int v;
-    
+
 } item;
 
 extern vector <vector<int> > MaxBack(double** x, int n);
-int getInitialNode(vector< bool > s);
-void setVerticesTrue(vector< bool > &s, vector< int > s_0);
+void fiX(double**x,int n);
 void print_edges(double **x, int n);
 
 #endif

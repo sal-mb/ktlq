@@ -1,4 +1,5 @@
 #include "MaxBack.h"
+#include <cassert>
 
 bool ordena_por_maxback(item a, item b){ return a.backValue < b.backValue; }
 
@@ -42,14 +43,12 @@ double inline ComputeCutMin(double** x, vector< bool > s){
 
     double cutmin = 0;
 
-    cout << "computing cutmin value...\n" << endl;
     for(int i = 0; i < s.size(); i++){
         if(s[i] == true){
             cutmin += computeCutMinV(x, s, i);
         }
     }
 
-    cout << "cutmin value: " << cutmin << endl;
     return cutmin;
 }
 
@@ -58,20 +57,17 @@ double inline CalculateMaxBackValue(double **x, vector< bool > s, int v, int in)
 
     double b = 0;
 
-        
+
     if(v < in){
         b += x[v][in];
     }else{
         b += x[in][v];
     }
-    
+
     return b;
 }
 
 void computeBackValues(vector< bool > &s, vector< item > &backValues, int initial_node, double** x){
-    cout << "computing maxBack values of s...\n" << endl;
-    
-    backValues.clear();
 
     for(int i = 0; i < s.size(); i++){
         if(s[i] == false){
@@ -108,14 +104,14 @@ vector< int > boolToIntSolution(vector< bool > s){
 }
 
 void inline setVerticesTrue(vector< bool > &s, vector< int > s_0){
-    
+
     for(int v : s_0){
         s[v] = true;
     }
 }
 
 int inline getInitialNode(vector< bool > s){
-    
+
     int i;
     for(i = 0; i < s.size(); i++){
         if(s[i] == false){
@@ -126,7 +122,20 @@ int inline getInitialNode(vector< bool > s){
     return i;
 }
 
+void fiX(double**x ,int n){
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            if(x[i][j] < EPSILON){
+                x[i][j] = 0;
+            }
+        }
+    }
+}
+
 vector< vector<int> > MaxBack(double **x,  int n){
+    fiX(x, n);
+
+    cout << " max back " << endl;
 
     vector< vector<int> > subtours;
     vector< bool > s_in_subtours(n,false); // stores vertices from all subtours
@@ -136,23 +145,22 @@ vector< vector<int> > MaxBack(double **x,  int n){
     subtours.clear();
 
     while(initial_node != -1){
-        
+
         vector< bool > s_0(n, false);
         s_0[initial_node] = true;
 
-        vector< bool > s_min; 
+        vector< bool > s_min;
         vector< item > backValues;
         double cutval, cutmin;
         int s_0_count = 1;
 
         cutmin = cutval = ComputeCutMin(x, s_0);
-        cout << cutmin << endl; 
 
         computeBackValues(s_0, backValues, initial_node, x);
-        
+
         while(s_0_count < n){
             item v = backValues[0];
-            
+
             s_0[v.v] = true;
             s_0_count++;
 
@@ -172,17 +180,15 @@ vector< vector<int> > MaxBack(double **x,  int n){
 
         setVerticesTrue(s_in_subtours, s_min_int);
 
-        if(cutmin < 2){
-            subtours.push_back(s_min_int);
+        if(s_min_int.size() == n){
+            return {};
         }
+        subtours.push_back(s_min_int);
 
-        for(int v : s_min_int){
-            cout << " -> " << v;
-        }
 
-        // get new inital node for next iteration 
+        // get new inital node for next iteration
         initial_node = getInitialNode(s_in_subtours);
     }
-    
+
     return subtours;
 }

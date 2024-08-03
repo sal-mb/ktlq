@@ -9,29 +9,29 @@ MyLazyCallback::MyLazyCallback(IloEnv env, const IloArray<IloBoolVarArray>& x_re
 		}
 	}
 	/************************************/
-} 
+}
 /*****************************************************************************************************************/
 
 /************************** Return a callback copy. This method is a CPLEX requirement ***************************/
-IloCplex::CallbackI* MyLazyCallback::duplicateCallback() const 
-{ 
-   return new (getEnv()) MyLazyCallback(getEnv(), x, n); 
+IloCplex::CallbackI* MyLazyCallback::duplicateCallback() const
+{
+   return new (getEnv()) MyLazyCallback(getEnv(), x, n);
 }
 /*****************************************************************************************************************/
 
 /************************************ Callback's code that is runned by CPLEX ************************************/
-void MyLazyCallback::main() 
-{	
+void MyLazyCallback::main()
+{
 	/********** Getting the relaxed variables values **********/
 	IloNumArray x_vals(getEnv(), (0.5*(n)*(n-1)));
 	getValues(x_vals, x_vars);
 	/**********************************************************/
-   
+
 	vector <vector<int> > cutSetPool;
-	vector<IloConstraint> cons; 
+	vector<IloConstraint> cons;
 
 	double **x_edge = new double*[n];
- 
+
 	for (int i = 0; i < n; i++) {
 		x_edge[i] = new double[n];
 	}
@@ -42,10 +42,9 @@ void MyLazyCallback::main()
 			x_edge[i][j] = x_vals[l++];
 		}
 	}
-	
-	//cutSetPool = MaxBack(x_edge, n);
 
-    cutSetPool = MinCut(x_edge, n);
+	cutSetPool = MaxBack(x_edge, n);
+
 	/***************** Creating the constraints ***************/
 	for (int c = 0; c < cutSetPool.size(); c++) {
 		IloExpr p(getEnv());

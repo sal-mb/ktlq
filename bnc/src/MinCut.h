@@ -1,5 +1,5 @@
-#ifndef MINCUT_H 
-#define MINCUT_H 
+#ifndef MINCUT_H
+#define MINCUT_H
 
 #include <ilcplex/ilocplex.h>
 #include <iostream>
@@ -21,18 +21,18 @@ typedef struct{
     int v = 0;
     double weight = -1;
 
-} vertex;
+}vertex;
 
 typedef struct{
-    
+
     int s;
     int t;
     double cotp; //cut of the phase
-    
+
 }st;
 
 typedef struct{
-    
+
     vector< int > v, v_;
     double cut_cost;
 
