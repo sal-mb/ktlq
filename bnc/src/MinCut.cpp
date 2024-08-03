@@ -48,7 +48,7 @@ void attX(double **x, int n, int s, int t){
 
 void initWeights(vector< int > V, vector< vertex > &W, double **x, int in){
     
-    for(int i = 0; i < V.size(); i++){
+    for(int i = 1 ; i < V.size(); i++){
 
         vertex v;
         
@@ -92,12 +92,18 @@ cut getCut(vector< int > V, int s, int cut_cost){
 
     cut cut;
     cut.cut_cost = cut_cost;
+    
+    vector< int > v, v_;
 
     for(int i = 0; i < V.size(); i++){
         if(V[i] == s){
-            cut.s_.push_back(i);
+            v.push_back(i);
+        }else{
+            v_.push_back(i);
         }
     }
+    cut.v = v;
+    cut.v_ = v_;
 
     return cut;
 }
@@ -157,38 +163,6 @@ st MinCutPhase(double **x, vector< int >V, int initial_node){
     return st;
 }
 
-cut getMinCut(double** x, int n, int initial_node){
-    vector< int > V = initV(n);
-    
-    cut min_cut;
-    cut current_cut;
-    
-    min_cut.cut_cost = 9999999;
-
-    int Vcount = n;
-    st st;
-    
-    while(Vcount > 1){
-        
-        st = MinCutPhase(x,V,initial_node);
-        
-        current_cut = getCut(V, st.s, st.cotp);
-        
-        if(current_cut.cut_cost < min_cut.cut_cost){
-
-            min_cut = current_cut;
-        }
-
-        V[st.t] = V[st.s];
-
-        attX(x,n, st.s, st.t);
-        
-        Vcount--;
-    }
-    
-    return min_cut;
-}
-
 double** cloneX(double** x, int n){
 
 	double **x_edge = new double*[n];
@@ -206,33 +180,108 @@ double** cloneX(double** x, int n){
     return x_edge;
 }
 
+void deleteX(double **x, int n){
+
+    for(int i = 0; i < n; i++){
+        delete x[i];
+    }
+    delete x;
+}
+void inline setVerticesTrue(vector< bool > &s, vector< int > v, vector< int > v_){
+    
+    for(int i : v){
+        s[i] = true;
+    }
+    for(int i : v_){
+        s[i] = true;
+    }
+}
+/*
+vector< vector<int> > getVertices(vector< int > V){
+    
+    vector< vector<int> > s_;
+    vector< int > sub;
+    
+    int pos_s_ = 0;
+
+    for(int i = 0; i < V.size(); i++){
+        
+        if(V[i] == i){
+            sub.push_back(i);
+        }else{
+            vector< int > dummy;
+            dummy.push_back(V[i]);
+
+            for(int j = V[i]+1; j < V.size(); j++){
+                if(V[i] == V[j]){
+                    dummy.push_back(j);
+                    V.erase(V.begin()+j);
+                }
+            }
+            s_.push_back(dummy);
+            for(auto o : dummy){
+                cout << " -> " << o;
+            }
+        }
+    }
+    
+    return std::move(s_);
+}*/
+
 extern vector< vector<int> > MinCut(double** x, int n){
     
     vector< vector<int> > subtours;
-    vector< bool > s_in_subtours(n,false);
+
+    vector< int > V = initV(n);
     int initial_node = 0;
+
+    cut min_cut;
+    cut current_cut;
     
-    subtours.clear();
+    min_cut.cut_cost = 9999999;
 
-    while(initial_node != -1){
+    int Vcount = n;
+    st st;
+    
+    print_edges(x,n);
+ //   double** x_ = cloneX(x,n);
+
+    while(Vcount > 1){
         
-        double** x_ = cloneX(x, n);
+        st = MinCutPhase(x,V,initial_node);
 
-        cut s = getMinCut(x_,n,initial_node);
-        
-        setVerticesTrue(s_in_subtours, s.s_);
+        if(st.cotp < 2){
+            cut s = getCut(V, st.s, st.cotp);
+            for(auto x : s.v){
+                cout << " -> " << x;
+            }
+            cout << endl;
+            for(auto x : s.v_){
 
-        if(s.cut_cost < 2){
-            subtours.push_back(s.s_);
+                cout << " -> " << x;
+            }
+            cout << endl;
         }
-        
-        initial_node = getInitialNode(s_in_subtours);
 
-        for(auto v : s.s_){
+        V[st.t] = V[st.s];
+
+        attX(x,n, st.s, st.t);
+        
+        Vcount--;
+    }
+    
+
+    //deleteX(x_, n);
+
+    for(auto s : subtours){
+        for(auto v : s){
             cout << " -> " << v;
         }
-        getchar();
+        cout << endl;
     }
+
+    print_edges(x,n);
+    getchar();
 
     return subtours;
 

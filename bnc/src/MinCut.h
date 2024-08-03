@@ -33,7 +33,7 @@ typedef struct{
 
 typedef struct{
     
-    vector< int > s_;
+    vector< int > v, v_;
     double cut_cost;
 
 }cut;
