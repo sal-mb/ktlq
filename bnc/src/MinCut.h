@@ -25,16 +25,16 @@ typedef struct{
 
 typedef struct{
 
-    int s;
-    int t;
-    double cotp; //cut of the phase
+    int s = 0;
+    int t = 0;
+    double cotp = 999999; //cut of the phase
 
 }st;
 
 typedef struct{
 
     vector< int > v, v_;
-    double cut_cost;
+    double cut_cost = 999999;
 
 }cut;
 

@@ -96,7 +96,7 @@ void attV(vector< int > &V, int s, int t){
     }
     int t_ = V[t];
 
-    for(int i = s+1; i < V.size(); i++){
+    for(int i = t; i < V.size(); i++){
         if(V[i] == t_){
             V[i] = V[s];
         }
@@ -115,6 +115,9 @@ st MinCutPhase(double **x, vector< int >V, int initial_node){
     int Vcount = 1;
 
     st st;
+    st.s = initial_node;
+    st.t = initial_node;
+    st.cotp = 99999;
 
     int n = W.size()+1;
 
@@ -124,7 +127,7 @@ st MinCutPhase(double **x, vector< int >V, int initial_node){
 
         if(Vcount == n-1){
             st.t = v_to_insert.v;
-            st.cut_of_the_phase = v_to_insert.weight;
+            st.cotp = v_to_insert.weight;
         }else{
             st.s = v_to_insert.v;
         }
@@ -192,7 +195,7 @@ extern vector< vector<int> > MinCut(double** x, int n){
 
     if(!subtours.empty()){
         subtours.push_back(last_subtour);
-    }
+    } 
 
     return subtours;
 }
