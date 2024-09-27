@@ -1,6 +1,8 @@
 #include "Data.h"
 #include <stdlib.h>
+#include <iostream>
 
+using std::cout, std::endl;
 void Data::readData(char* filePath)
 {
    FILE* f = fopen(filePath, "r");
@@ -33,6 +35,16 @@ void Data::readData(char* filePath)
 	 exit(0);
       }
    }
+}
+
+void Data::printData(){
+
+  cout << "n_items: " << this->n_items << ", bin_capacity: " << this->bin_capacity << endl;
+  cout << "weights: ";
+  for(auto i : this->weights){
+    cout << i << " ";
+  }
+  cout << endl;
 }
 
 int Data::getNItems()

@@ -1,3 +1,6 @@
+#ifndef PRICING_H
+#define PRICING_H
+
 #include <ilcplex/ilocplex.h>
 #include <vector>
 
@@ -19,3 +22,4 @@ public:
   double getObjValue();
   IloNumArray getColumn();
 };
+#endif

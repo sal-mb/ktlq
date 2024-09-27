@@ -45,7 +45,7 @@ void attX(double **x, int n, int s,int t){
 
 }
 
-void initWeights(vector< int > V, vector< vertex > &W, double **x, int in){
+void initWeights(const vector< int > &V, vector< vertex > &W, double **x, const int in){
 
     for(int i = 1 ; i < V.size(); i++){
 
@@ -70,7 +70,7 @@ void initWeights(vector< int > V, vector< vertex > &W, double **x, int in){
     make_heap(W.begin(), W.end(), orderByWeight);
 }
 
-void updateWeights(vector< vertex > &W, double** x, int vi){
+void updateWeights(vector< vertex > &W, double** x, const int vi){
 
     for(vertex &w : W){
 

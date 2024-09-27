@@ -1,29 +1,26 @@
 #ifndef _DATA_H_
 #define _DATA_H_
 
-#include <vector>
 #include <stdio.h>
+#include <vector>
 
-class Data
-{
-   private:
+class Data {
+private:
+  int bin_capacity;
+  int n_items;
+  std::vector<int> weights;
 
-      int bin_capacity;
-      int n_items;
-      std::vector<int> weights;
+public:
+  void readData(char *filePath);
 
-   public:
+  void printData();
+  int getNItems();
 
-      void readData(char* filePath);
+  int getBinCapacity();
 
-      int getNItems();
+  int getItemWeight(unsigned int item);
 
-      int getBinCapacity();
-
-      int getItemWeight(unsigned int item);
-
-      std::vector<int> getWeights();
+  std::vector<int> getWeights();
 };
 
 #endif
-

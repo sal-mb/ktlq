@@ -1,3 +1,6 @@
+#ifndef MASTER_H
+#define MASTER_H
+
 #include <ilcplex/ilocplex.h>
 
 class Master {
@@ -19,3 +22,4 @@ public:
   void printSolution();
   double getObjValue();
 };
+#endif
