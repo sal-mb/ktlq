@@ -1,6 +1,7 @@
 #include "Master.h"
 
 using std::cout, std::endl;
+using std::vector;
 
 Master::Master(const int &n, const double &M) {
   this->n = n;
@@ -49,6 +50,16 @@ void Master::addNewLambda(const IloNumArray &entering_col,
 }
 
 double Master::getObjValue() { return this->solver.getObjValue(); }
+
+vector<double> Master::getSolution() {
+  vector<double> solution(this->lambda.getSize());
+
+  for(int i = 0; i < this->lambda.getSize(); i++){
+    solution[i] = this->solver.getValue(this->lambda[i]);
+  }
+
+  return solution;
+}
 
 void Master::printSolution() {
   for (int i = 0; i < this->lambda.getSize(); i++) {

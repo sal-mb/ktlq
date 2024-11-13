@@ -1,3 +1,5 @@
+#include<vector>
+
 #ifndef MASTER_H
 #define MASTER_H
 
@@ -20,6 +22,7 @@ public:
   IloNumArray getDuals();
   void addNewLambda(const IloNumArray &entering_col, const int lambda_index);
   void printSolution();
+  std::vector<double> getSolution();
   double getObjValue();
 };
 #endif

@@ -21,5 +21,6 @@ public:
   void solve();
   double getObjValue();
   IloNumArray getColumn();
+  void printSolution();
 };
 #endif
