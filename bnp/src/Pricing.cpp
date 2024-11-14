@@ -37,6 +37,11 @@ Pricing::Pricing(const int &n, const std::vector<int> &weights,
   this->solver.setOut(env.getNullStream());
 }
 
+Pricing::~Pricing(){
+  this->env.end();
+  cout << "pricing destroyed" << endl;
+}
+
 void Pricing::solve() { this->solver.solve(); }
 
 double Pricing::getObjValue() { return this->solver.getObjValue(); }
@@ -45,6 +50,35 @@ IloNumArray Pricing::getColumn() {
   IloNumArray column(env, this->x.getSize());
   this->solver.getValues(this->x, column);
   return column;
+}
+
+void Pricing::sepJoinItems(vector<std::pair<int,int>> items, vector<bool> sep_join){
+
+
+  for(int i = 0; i < items.size(); i++){
+    if(sep_join[i]){
+      // Joining items
+      this->model.add(this->x[items[i].first] <= this->x[items[i].second]);     
+      this->model.add(this->x[items[i].second] <= this->x[items[i].first]);    
+
+    }else{
+      // Separating items
+      this->model.add(this->x[items[i].first] <= (1 - this->x[items[i].second]));     
+      this->model.add(this->x[items[i].second] <= (1 - this->x[items[i].first]));    
+
+    }
+  }
+}
+
+vector<bool> Pricing::getBoolColumn() {
+  IloNumArray column(env, this->x.getSize());
+  vector<bool> bool_column(n);
+
+  this->solver.getValues(this->x, column);
+  for(int i = 0; i < n; i++){
+    bool_column[i] = column[i] < 0.5 ? false : true;
+  }
+  return bool_column;
 }
 
 void Pricing::printSolution() {

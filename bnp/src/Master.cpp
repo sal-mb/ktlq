@@ -1,9 +1,11 @@
 #include "Master.h"
+#include "prints.h"
+#include <vector>
 
 using std::cout, std::endl;
 using std::vector;
 
-Master::Master(const int &n, const double &M) {
+Master::Master(const int& n, const double& M) {
   this->n = n;
   this->model = IloModel(env);
   this->lambda = IloNumVarArray(env, n, 0, IloInfinity);
@@ -37,16 +39,62 @@ IloNumArray Master::getDuals() {
   return pi;
 }
 
-void Master::addNewLambda(const IloNumArray &entering_col,
-                          const int lambda_index) {
+Master::~Master() {
+  this->env.end();
+  cout << "Master destroyed" << endl;
+}
+
+void Master::addNewLambda(const IloNumArray& entering_col,
+  const int lambda_index) {
   char var_name[50];
   sprintf(var_name, "y%d", lambda_index);
 
   IloNumVar new_lambda(this->objective(1) + constraints(entering_col), 0,
-                       IloInfinity);
+    IloInfinity);
   new_lambda.setName(var_name);
 
   this->lambda.add(new_lambda);
+}
+
+void Master::sepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<vector<bool>>& columns) {
+  for (int i = 0; i < items.size(); i++) {
+    // Joining the pair items[i]
+    if (sep_join[i]) {
+      for (int k = n; k < this->lambda.getSize(); k++) {
+        if (columns[k][items[i].first] != columns[k][items[i].second]) {
+          this->lambda[k].setUB(0);
+          this->join_lambdas.push_back(k);
+        }
+      }
+    } else {
+      // Separatings the pair items[i]
+      for (int k = n; k < this->lambda.getSize(); k++) {
+        // Setting the lambda UB = 0 so they cant be together
+        if (columns[k][items[i].first] == true && columns[k][items[i].second] == true) {
+          this->lambda[k].setUB(0);
+          this->sep_lambdas.push_back(k);
+        }
+      }
+    }
+  }
+}
+
+void Master::unSepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<vector<bool>>& columns) {
+  for (int i = 0; i < items.size(); i++) {
+    // Unjoining the pair items[i]
+    if (sep_join[i]) {
+      for (auto k : join_lambdas) {
+        this->lambda[k].setUB(IloInfinity);
+      }
+    } else {
+      // Allowing the pair items[i] together
+      printVector(sep_lambdas);
+      for (auto k : sep_lambdas) {
+        // Setting the UB = IloInfinity so they can be together again
+        this->lambda[k].setUB(IloInfinity);
+      }
+    }
+  }
 }
 
 double Master::getObjValue() { return this->solver.getObjValue(); }
@@ -54,7 +102,7 @@ double Master::getObjValue() { return this->solver.getObjValue(); }
 vector<double> Master::getSolution() {
   vector<double> solution(this->lambda.getSize());
 
-  for(int i = 0; i < this->lambda.getSize(); i++){
+  for (int i = 0; i < this->lambda.getSize(); i++) {
     solution[i] = this->solver.getValue(this->lambda[i]);
   }
 

@@ -1,6 +1,5 @@
 #include "Data.h"
 #include "Master.h"
-#include "Pricing.h"
 #include <cstdlib>
 #include <ilcplex/ilocplex.h>
 #include <vector>
@@ -18,7 +17,7 @@ int main(int argc, char *argv[]) {
   data.readData(argv[1]);
   data.printData();
 
-  Bnp::solveMaster(data);
+  Bnp::run(data);
 
   return 0;
 }
