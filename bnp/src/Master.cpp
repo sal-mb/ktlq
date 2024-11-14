@@ -60,7 +60,7 @@ void Master::sepJoinItems(const vector<std::pair<int, int>>& items, const vector
   for (int i = 0; i < items.size(); i++) {
     // Joining the pair items[i]
     if (sep_join[i]) {
-      for (int k = n; k < this->lambda.getSize(); k++) {
+      for (int k = 0; k < this->lambda.getSize(); k++) {
         if (columns[k][items[i].first] != columns[k][items[i].second]) {
           this->lambda[k].setUB(0);
           this->join_lambdas.push_back(k);
@@ -81,6 +81,7 @@ void Master::sepJoinItems(const vector<std::pair<int, int>>& items, const vector
 
 void Master::unSepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<vector<bool>>& columns) {
   for (int i = 0; i < items.size(); i++) {
+
     // Unjoining the pair items[i]
     if (sep_join[i]) {
       for (auto k : join_lambdas) {
@@ -88,7 +89,6 @@ void Master::unSepJoinItems(const vector<std::pair<int, int>>& items, const vect
       }
     } else {
       // Allowing the pair items[i] together
-      printVector(sep_lambdas);
       for (auto k : sep_lambdas) {
         // Setting the UB = IloInfinity so they can be together again
         this->lambda[k].setUB(IloInfinity);

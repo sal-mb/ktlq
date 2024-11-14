@@ -37,3 +37,19 @@ void printVector(std::vector<double> vector){
   }
     cout << endl;;
 }
+
+void printItems(std::vector<std::pair<int,int>> items){
+  cout << "items: " << endl;
+  for(auto i : items){
+    cout << i.first << ", " << i.second << " / ";
+  }
+  cout << endl;
+}
+
+void printSepJoin(std::vector<bool> sep_join){
+  cout << "sep_join: " << endl;
+  for(auto k : sep_join){
+    cout << k << " / ";
+  }
+  cout << endl;
+}

@@ -1,9 +1,9 @@
 #include "Bnp.h"
+#include "Columns.h"
 #include "prints.h"
 #include <list>
 #include <utility>
 #include <vector>
-#include "Columns.h"
 
 using std::cout, std::endl;
 using std::vector;
@@ -15,47 +15,56 @@ void Bnp::run(Data& data, const double& M, const int branching) {
   std::list<Node> tree;
   tree.push_back(root);
 
-  Node best_node;
-  
-  // Initializing the master problem 
+  int best_obj_value = n + 1;
+
+  // Initializing the master problem
   Master rmp(n, M);
 
   // Initializing the columns structure with the identity matrix
   vector<vector<bool>> columns = initColumns(n);
 
   while (!tree.empty()) {
-    cout << "run start" << endl;
-    getchar();
+    cout << tree.size() << endl;
     // Getting the branching node
-    std::list<Node>::iterator node = branching ? tree.begin() : std::prev(tree.end()); // 0 - bfs, 1 - dfs;
-    
+    auto node = branching ? tree.begin() : std::prev(tree.end()); // 0 - bfs, 1 - dfs;
+
     // Solving the master problem
     vector<double> solution = Bnp::solveMaster(data, M, node, rmp, columns);
-    cout << "solution: " << endl; 
-    printVector(solution);
-    getchar();
 
-    // Branching separating items
-    std::pair<int,int> best = getBestToSepJoin(columns, solution, n);
-    Node sep = (*node);
-    sep.items.push_back(best);
+    // Getting the objective value for bin packing from the solution
+    int obj_value = computeSolution(*node, solution);
+    // cout << "current solution: " << obj_value << endl;
+    // cout << "best solution: " << best_obj_value << endl;
 
-    // Pushing false in vector so we can know that we have to separate
-    sep.sep_join.push_back(false);
+    if (obj_value < best_obj_value) {
 
-    tree.push_back(sep);
+      if (node->feasible) {
+        best_obj_value = obj_value;
+      } else {
+        // Branching separating items
+        std::pair<int, int> best = getBestToSepJoin(columns, solution, n);
+        Node sep = (*node);
+        sep.items.push_back(best);
 
-    // Branching joining items
-    Node join = (*node);
-    join.items.push_back(best);
+        // Pushing false in vector so we can know that we have to separate
+        sep.sep_join.push_back(false);
 
-    // Pushing true in vector so we can know that we have to join
-    join.sep_join.push_back(true);
+        tree.push_back(sep);
 
-    tree.push_back(join);
+        // Branching joining items
+        Node join = (*node);
+        join.items.push_back(best);
+
+        // Pushing true in vector so we can know that we have to join
+        join.sep_join.push_back(true);
+
+        tree.push_back(join);
+      }
+    }
 
     tree.erase(node);
   }
+  cout << "solution: " << best_obj_value << endl;
 }
 
 vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Node>::iterator& node, Master& rmp, vector<vector<bool>>& columns) {
@@ -65,20 +74,21 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
   vector<int> weights = data.getWeights();
   int capacity = data.getBinCapacity();
 
+#if DEBUG
   cout << "Separating and or Joining Items... " << endl;
-  
+
   // SepJoining the items in the master problem
-  rmp.sepJoinItems(node->items, node->sep_join,columns);
+#endif // DEBUG
+
+  rmp.sepJoinItems(node->items, node->sep_join, columns);
 
   rmp.solve();
-
+#if DEBUG
   cout << "Initial lower bound: " << rmp.getObjValue() << endl;
-
   cout << "Initial solution: ";
-
   rmp.printSolution();
-
   cout << endl;
+#endif // DEBUG
 
   int lambda_counter = n;
 
@@ -87,9 +97,11 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
     // Get the dual variables
     IloNumArray pi = rmp.getDuals();
 
+#if DEBUG
     for (size_t i = 0; i < n; i++) {
       cout << "Dual variable of constraint " << i << " = " << pi[i] << endl;
     }
+#endif // DEBUG
 
     // Build and solve the pricing problem
     Pricing pricing_problem(n, weights, pi, capacity);
@@ -99,37 +111,38 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
 
     if (pricing_problem.getObjValue() < -1e-5) {
 
-      cout << "Reduced cost is equal to " << pricing_problem.getObjValue()
-           << ", which is less than 0..." << endl;
+#if DEBUG
+      cout << "Reduced cost is equal to " << pricing_problem.getObjValue() << ", which is less than 0..." << endl;
+#endif // DEBUG
 
       IloNumArray entering_col = pricing_problem.getColumn();
       vector<bool> bool_col = pricing_problem.getBoolColumn();
       // Adding the generated column to the column matrix
 
       columns.push_back(bool_col);
-      printColumns(columns);
-      getchar();
 
+#if DEBUG
       pricing_problem.printSolution();
+#endif // DEBUG
 
       rmp.addNewLambda(entering_col, ++lambda_counter);
-      cout << "Solving the RMP again..." << endl;
+      // cout << "Solving the RMP again..." << endl;
 
       rmp.solve();
 
     } else {
-      cout << "No column with negative reduced costs found. The current basis "
-              "is optimal"
-           << endl;
-      cout << "Final master problem: " << endl;
+      // cout << "No column with negative reduced costs found. The current basis is optimal" << endl;
+      // cout << "Final master problem: " << endl;
 
-      rmp.printSolution();
+      // rmp.printSolution();
       break;
     }
   }
-
   // Gets the lambda values from the model
   vector<double> lambda = rmp.getSolution();
-
+  
+  // UnSepUnJoining items 
+  rmp.unSepJoinItems(node->items, node->sep_join, columns);
+  
   return lambda;
 }

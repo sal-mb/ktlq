@@ -39,7 +39,6 @@ Pricing::Pricing(const int &n, const std::vector<int> &weights,
 
 Pricing::~Pricing(){
   this->env.end();
-  cout << "pricing destroyed" << endl;
 }
 
 void Pricing::solve() { this->solver.solve(); }

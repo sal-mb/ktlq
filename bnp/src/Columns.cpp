@@ -39,5 +39,24 @@ std::pair<int,int> getBestToSepJoin(const vector<vector<bool>> &columns, const v
   return best;
 }
 
+int computeSolution(Node &node,const vector<double> &solution){
+  
+  // Objetive value for the bin packing problem
+  int value = 0; 
+  
+  node.feasible = true;
+
+  for(auto k : solution){
+    // If lambda[k] is a potential bin
+    if(k > 0){
+      value++;
+      if(k != 1){
+        node.feasible = false;
+      }
+    }
+  }
+
+  return value;
+}
 
 
