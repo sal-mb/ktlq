@@ -25,32 +25,26 @@ void Bnp::run(Data& data, const double& M, const int branching) {
 
   while (!tree.empty()) {
     cout << tree.size() << endl;
+
     // Getting the branching node
-    auto node = branching ? tree.begin() : std::prev(tree.end()); // 0 - bfs, 1 - dfs;
+    auto node = branching ? tree.begin() : std::prev(tree.end()); // 0 - dfs, 1 - bfs;
 
     // Solving the master problem
     vector<double> solution = Bnp::solveMaster(data, M, node, rmp, columns);
 
     // Getting the objective value for bin packing from the solution
     int obj_value = computeSolution(*node, solution);
-    // cout << "current solution: " << obj_value << endl;
-    // cout << "best solution: " << best_obj_value << endl;
 
     if (obj_value < best_obj_value) {
 
       if (node->feasible) {
         best_obj_value = obj_value;
+        cout << "best: " << best_obj_value << endl;
+
       } else {
+
         // Branching separating items
         std::pair<int, int> best = getBestToSepJoin(columns, solution, n);
-        Node sep = (*node);
-        sep.items.push_back(best);
-
-        // Pushing false in vector so we can know that we have to separate
-        sep.sep_join.push_back(false);
-
-        tree.push_back(sep);
-
         // Branching joining items
         Node join = (*node);
         join.items.push_back(best);
@@ -59,6 +53,13 @@ void Bnp::run(Data& data, const double& M, const int branching) {
         join.sep_join.push_back(true);
 
         tree.push_back(join);
+        Node sep = (*node);
+        sep.items.push_back(best);
+
+        // Pushing false in vector so we can know that we have to separate
+        sep.sep_join.push_back(false);
+
+        tree.push_back(sep);
       }
     }
 
@@ -76,13 +77,12 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
 
 #if DEBUG
   cout << "Separating and or Joining Items... " << endl;
-
-  // SepJoining the items in the master problem
 #endif // DEBUG
 
+  // SepJoining the items in the master problem
   rmp.sepJoinItems(node->items, node->sep_join, columns);
-
   rmp.solve();
+
 #if DEBUG
   cout << "Initial lower bound: " << rmp.getObjValue() << endl;
   cout << "Initial solution: ";
@@ -117,8 +117,8 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
 
       IloNumArray entering_col = pricing_problem.getColumn();
       vector<bool> bool_col = pricing_problem.getBoolColumn();
-      // Adding the generated column to the column matrix
 
+      // Adding the generated column to the column matrix
       columns.push_back(bool_col);
 
 #if DEBUG
@@ -126,23 +126,20 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
 #endif // DEBUG
 
       rmp.addNewLambda(entering_col, ++lambda_counter);
-      // cout << "Solving the RMP again..." << endl;
 
       rmp.solve();
 
     } else {
-      // cout << "No column with negative reduced costs found. The current basis is optimal" << endl;
-      // cout << "Final master problem: " << endl;
 
-      // rmp.printSolution();
       break;
     }
   }
+
   // Gets the lambda values from the model
   vector<double> lambda = rmp.getSolution();
-  
-  // UnSepUnJoining items 
+
+  // UnSepUnJoining items
   rmp.unSepJoinItems(node->items, node->sep_join, columns);
-  
+
   return lambda;
 }

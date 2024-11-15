@@ -57,13 +57,11 @@ void Pricing::sepJoinItems(vector<std::pair<int,int>> items, vector<bool> sep_jo
   for(int i = 0; i < items.size(); i++){
     if(sep_join[i]){
       // Joining items
-      this->model.add(this->x[items[i].first] <= this->x[items[i].second]);     
-      this->model.add(this->x[items[i].second] <= this->x[items[i].first]);    
+      this->model.add(this->x[items[i].first] == this->x[items[i].second]);     
 
     }else{
       // Separating items
-      this->model.add(this->x[items[i].first] <= (1 - this->x[items[i].second]));     
-      this->model.add(this->x[items[i].second] <= (1 - this->x[items[i].first]));    
+      this->model.add(( this->x[items[i].first] + this->x[items[i].second] )<= 1);     
 
     }
   }
