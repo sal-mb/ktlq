@@ -1,17 +1,17 @@
 #include "Columns.h"
 #include <cstdlib>
-vector<vector<bool>> initColumns(const int n){
+vector<vector<bool>> initColumns(const int n) {
   vector<vector<bool>> columns(n, vector<bool>(n));
 
-  for(int i = 0; i < n; i++){
+  for (int i = 0; i < n; i++) {
     columns[i][i] = 1;
   }
   return columns;
 }
 
-std::pair<int,int> getBestToSepJoin(const vector<vector<bool>> &columns, const vector<double> &lambda, const int &n){
+std::pair<int, int> getBestToSepJoin(const vector<vector<bool>>& columns, const vector<double>& lambda, const int& n) {
 
-  vector<vector<double>> z_ij(n, vector<double>(n));
+  vector<vector<double>> z_ij(n, vector<double>(n, 0));
 
   double best_z = 1;
 
@@ -25,38 +25,40 @@ std::pair<int,int> getBestToSepJoin(const vector<vector<bool>> &columns, const v
         if (columns[k][i] == true && columns[k][j] == true) {
 
           z_ij[i][j] += lambda[k];
-
-          if (std::abs(z_ij[i][j] - 0.5) < best_z) {
-
-            best_z = std::abs(z_ij[i][j] - 0.5);
-            best.first = i;
-            best.second = j;
-          }
         }
+      }
+    }
+  }
+
+  for (int i = 0; i < n; i++) {
+    for (int j = i + 1; j < n; j++) {
+
+      if (std::abs(z_ij[i][j] - 0.5) < best_z) {
+
+        best_z = std::abs(z_ij[i][j] - 0.5);
+        best.first = i;
+        best.second = j;
       }
     }
   }
   return best;
 }
 
-int computeSolution(Node &node,const vector<double> &solution){
-  
-  // Objetive value for the bin packing problem
-  int value = 0; 
-  
+double computeSolution(Node& node, const vector<double>& solution) {
+
+  double obj_value = 0;
+
   node.feasible = true;
 
-  for(auto k : solution){
-    // If lambda[k] is a potential bin
-    if(k > 0){
-      value++;
-      if(k != 1){
-        node.feasible = false;
-      }
+  for (auto k : solution) {
+    if (k > 0) {
+      obj_value += k;
+      // if (k != 1) {
+      // node.feasible = false;
+      //}
     }
   }
+  node.feasible = std::ceil(obj_value) - obj_value < 0.001;
 
-  return value;
+  return obj_value;
 }
-
-

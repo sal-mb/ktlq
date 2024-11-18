@@ -95,6 +95,8 @@ void Master::unSepJoinItems(const vector<std::pair<int, int>>& items, const vect
       }
     }
   }
+  sep_lambdas.clear();
+  join_lambdas.clear();
 }
 
 double Master::getObjValue() { return this->solver.getObjValue(); }
