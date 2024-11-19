@@ -13,16 +13,16 @@ void Bnp::run(Data& data, const double& M, const int branching) {
   int n = data.getNItems();
   Node root;
 
-  std::list<Node> tree;
-  tree.push_back(root);
-
-  int best_obj_value = n + 1;
-
   // Initializing the master problem
   Master rmp(n, M);
 
   // Initializing the columns structure with the identity matrix
-  vector<vector<bool>> columns = initColumns(n);
+  vector<vector<bool>> columns = initColumns(n, root);
+
+  std::list<Node> tree;
+  tree.push_back(root);
+
+  int best_obj_value = n + 1;
 
   while (!tree.empty()) {
     // cout << tree.size() << endl;
@@ -32,10 +32,10 @@ void Bnp::run(Data& data, const double& M, const int branching) {
 
     // Solving the master problem
     vector<double> solution = Bnp::solveMaster(data, M, node, rmp, columns);
-    //rmp.solver.exportModel("model.lp");
+
     // Getting the objective value for bin packing from the solution
     double obj_value = computeSolution(*node, solution);
-    std::cout << "obj: " << obj_value << std::endl;
+
     if ((int) std::ceil(obj_value) < best_obj_value) {
 
       if (node->feasible) {
@@ -44,7 +44,7 @@ void Bnp::run(Data& data, const double& M, const int branching) {
 
       } else {
 
-        std::pair<int, int> best = getBestToSepJoin(columns, solution, n);
+        std::pair<int, int> best = getBestToSepJoin(*node, columns, solution, n);
         std::cout << best.first << ' ' << best.second << std::endl;
 
         // Branching separating items
@@ -73,7 +73,7 @@ void Bnp::run(Data& data, const double& M, const int branching) {
   cout << "solution: " << best_obj_value << endl;
 }
 
-vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Node>::iterator& node, Master& rmp, vector<vector<bool>>& columns) {
+vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Node>::iterator& node, Master& rmp, vector<vector<bool>>& column_matrix) {
 
   int n = data.getNItems();
 
@@ -85,7 +85,7 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
 #endif // DEBUG
 
   // SepJoining the items in the master problem
-  rmp.sepJoinItems(node->items, node->sep_join, columns);
+  rmp.sepJoinItems(node->items, node->sep_join, node->columns, column_matrix);
   rmp.solve();
 
 #if DEBUG
@@ -124,18 +124,18 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
       vector<bool> bool_col = pricing_problem.getBoolColumn();
 
       // Adding the generated column to the column matrix
-      columns.push_back(bool_col);
+      column_matrix.push_back(bool_col);
+      node->columns.push_back(column_matrix.size()-1);
 
 #if DEBUG
       pricing_problem.printSolution();
 #endif // DEBUG
-
+      
       rmp.addNewLambda(entering_col, ++lambda_counter);
 
       rmp.solve();
 
     } else {
-
       break;
     }
   }
@@ -144,7 +144,7 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
   vector<double> lambda = rmp.getSolution();
 
   // UnSepUnJoining items
-  rmp.unSepJoinItems(node->items, node->sep_join, columns);
+  rmp.unSepJoinItems(node->items, node->sep_join);
 
   return lambda;
 }

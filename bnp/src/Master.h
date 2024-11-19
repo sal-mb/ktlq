@@ -31,8 +31,8 @@ class Master {
   void addNewLambda(const IloNumArray& entering_col, const int lambda_index);
   void printSolution();
   std::vector<double> getSolution();
-  void sepJoinItems(const vector<std::pair<int, int>> &items, const vector<bool> &sep_join, const vector<vector<bool>> &columns);
-  void unSepJoinItems(const vector<std::pair<int, int>> &items, const vector<bool> &sep_join, const vector<vector<bool>> &columns);
+void sepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<int> &columns, const vector<vector<bool>>& column_matrix);
+  void unSepJoinItems(const vector<std::pair<int, int>> &items, const vector<bool> &sep_join);
   double getObjValue();
 };
 #endif

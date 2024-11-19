@@ -7,6 +7,7 @@
 #include <list>
 
 typedef struct Node {
+  vector<int> columns;
   vector<std::pair<int, int>> items; // This vector stores the pair of items to join or separate
   vector<bool> sep_join; // This vector tells if the items needs to bem separated (0 false) or joined (1 true)
   bool feasible = false;

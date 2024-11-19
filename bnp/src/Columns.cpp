@@ -1,15 +1,16 @@
 #include "Columns.h"
 #include <cstdlib>
-vector<vector<bool>> initColumns(const int n) {
+vector<vector<bool>> initColumns(const int n, Node &node) {
   vector<vector<bool>> columns(n, vector<bool>(n));
 
   for (int i = 0; i < n; i++) {
+    node.columns.push_back(i);
     columns[i][i] = 1;
   }
   return columns;
 }
 
-std::pair<int, int> getBestToSepJoin(const vector<vector<bool>>& columns, const vector<double>& lambda, const int& n) {
+std::pair<int, int> getBestToSepJoin(const Node &node, const vector<vector<bool>>& columns, const vector<double>& lambda, const int& n) {
 
   vector<vector<double>> z_ij(n, vector<double>(n, 0));
 
@@ -21,7 +22,7 @@ std::pair<int, int> getBestToSepJoin(const vector<vector<bool>>& columns, const 
 
     for (int j = i + 1; j < n; j++) {
 
-      for (int k = n; k < lambda.size(); k++) {
+      for (auto k : node.columns) {
         if (columns[k][i] == true && columns[k][j] == true) {
 
           z_ij[i][j] += lambda[k];

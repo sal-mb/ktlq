@@ -56,12 +56,12 @@ void Master::addNewLambda(const IloNumArray& entering_col,
   this->lambda.add(new_lambda);
 }
 
-void Master::sepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<vector<bool>>& columns) {
+void Master::sepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<int> &columns, const vector<vector<bool>>& column_matrix) {
   for (int i = 0; i < items.size(); i++) {
     // Joining the pair items[i]
     if (sep_join[i]) {
-      for (int k = 0; k < this->lambda.getSize(); k++) {
-        if (columns[k][items[i].first] != columns[k][items[i].second]) {
+      for (auto k : columns) {
+        if (column_matrix[k][items[i].first] != column_matrix[k][items[i].second]) {
           this->lambda[k].setUB(0);
           this->join_lambdas.push_back(k);
         }
@@ -70,7 +70,7 @@ void Master::sepJoinItems(const vector<std::pair<int, int>>& items, const vector
       // Separatings the pair items[i]
       for (int k = n; k < this->lambda.getSize(); k++) {
         // Setting the lambda UB = 0 so they cant be together
-        if (columns[k][items[i].first] == true && columns[k][items[i].second] == true) {
+        if (column_matrix[k][items[i].first] == true && column_matrix[k][items[i].second] == true) {
           this->lambda[k].setUB(0);
           this->sep_lambdas.push_back(k);
         }
@@ -79,7 +79,7 @@ void Master::sepJoinItems(const vector<std::pair<int, int>>& items, const vector
   }
 }
 
-void Master::unSepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<vector<bool>>& columns) {
+void Master::unSepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join) {
   for (int i = 0; i < items.size(); i++) {
 
     // Unjoining the pair items[i]
