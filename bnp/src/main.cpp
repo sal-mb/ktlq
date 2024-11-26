@@ -5,12 +5,16 @@
 #include "chrono"
 #include <chrono>
 #include <cstdlib>
+#include <fstream>
 #include <ilcplex/ilocplex.h>
 #include <vector>
 
 using std::cout, std::endl, std::vector;
 
 int main(int argc, char* argv[]) {
+
+  std::fstream fs;
+  fs.open("t", std::fstream::app);
   const double M = 1e6;
   // vector<int> weight = {2, 1, 3, 3, 5};
   // int capacity = 7;
@@ -22,12 +26,12 @@ int main(int argc, char* argv[]) {
 
   auto start = std::chrono::high_resolution_clock::now();
 
-  Bnp::run(data);
+  int best_value = Bnp::run(data);
 
   auto stop = std::chrono::high_resolution_clock::now();
 
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-
-  cout << "duration: \n" << (double)duration.count()/1000 << endl; 
+  fs << "bins: " << best_value << endl;
+  fs << "duration: " << (double)duration.count()/1000 << endl; 
   return 0;
 }

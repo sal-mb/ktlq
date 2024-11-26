@@ -17,7 +17,7 @@ namespace Bnp {
 
 // Returns the item pair to separate/join
 vector<double> solveMaster(Data& data, const double& M, const std::list<Node>::iterator &node, Master &rmp, vector<vector<bool>> &columns);
-void run(Data& data, const double& M = 1e6, const int branching = 1);
+int run(Data& data, const double& M = 1e6, const int branching = 0);
 
 } // namespace Bnp
 #endif

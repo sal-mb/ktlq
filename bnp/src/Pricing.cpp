@@ -61,7 +61,7 @@ void Pricing::sepJoinItems(vector<std::pair<int,int>> items, vector<bool> sep_jo
 
     }else{
       // Separating items
-      this->model.add(( this->x[items[i].first] + this->x[items[i].second] )<= 1);     
+      this->model.add( this->x[items[i].first] + this->x[items[i].second] <= 1);     
 
     }
   }

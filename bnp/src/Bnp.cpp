@@ -9,7 +9,7 @@
 using std::cout, std::endl;
 using std::vector;
 
-void Bnp::run(Data& data, const double& M, const int branching) {
+int Bnp::run(Data& data, const double& M, const int branching) {
   int n = data.getNItems();
   Node root;
 
@@ -34,36 +34,39 @@ void Bnp::run(Data& data, const double& M, const int branching) {
     vector<double> solution = Bnp::solveMaster(data, M, node, rmp, columns);
 
     // Getting the objective value for bin packing from the solution
-    double obj_value = computeSolution(*node, solution);
+    int obj_value = computeSolution(*node, solution);
 
-    if ((int) std::ceil(obj_value) < best_obj_value) {
+    std::pair<int, int> best = getBestToSepJoin(*node, columns, solution, n);
+
+    if (obj_value < best_obj_value) {
 
       if (node->feasible) {
-        best_obj_value = std::ceil(obj_value);
+        best_obj_value = obj_value;
         cout << "best: " << best_obj_value << endl;
 
       } else {
 
-        std::pair<int, int> best = getBestToSepJoin(*node, columns, solution, n);
         std::cout << best.first << ' ' << best.second << std::endl;
+        
+        if(!(best.first == 0 && best.second == 0)){
+          // Branching separating items
+          Node sep = (*node);
+          sep.items.push_back(best);
 
-        // Branching separating items
-        Node sep = (*node);
-        sep.items.push_back(best);
+          // Pushing false in vector so we can know that we have to separate
+          sep.sep_join.push_back(false);
 
-        // Pushing false in vector so we can know that we have to separate
-        sep.sep_join.push_back(false);
+          tree.push_back(sep);
 
-        tree.push_back(sep);
+          // Branching joining items
+          Node join = (*node);
+          join.items.push_back(best);
 
-        // Branching joining items
-        Node join = (*node);
-        join.items.push_back(best);
+          // Pushing true in vector so we can know that we have to join
+          join.sep_join.push_back(true);
 
-        // Pushing true in vector so we can know that we have to join
-        join.sep_join.push_back(true);
-
-        tree.push_back(join);
+          tree.push_back(join);
+        }
       }
     }
 
@@ -71,6 +74,7 @@ void Bnp::run(Data& data, const double& M, const int branching) {
     std::cout << tree.size() << std::endl;
   }
   cout << "solution: " << best_obj_value << endl;
+  return best_obj_value;
 }
 
 vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Node>::iterator& node, Master& rmp, vector<vector<bool>>& column_matrix) {

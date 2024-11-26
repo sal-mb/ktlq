@@ -1,0 +1,330 @@
+
+ instances/instancia1.BPP
+bins: 3
+duration: 0.119
+
+ instances/instancia.BPP
+bins: 4
+duration: 0.034
+
+ instances/N1C1W1_A.BPP
+bins: 25
+duration: 1.327
+
+ instances/N1C1W1_B.BPP
+bins: 31
+duration: 0.692
+
+ instances/N1C1W1_C.BPP
+bins: 20
+duration: 1.781
+
+ instances/N1C1W1_D.BPP
+bins: 28
+duration: 0.947
+
+ instances/N1C1W1_E.BPP
+bins: 26
+duration: 1.08
+
+ instances/N1C1W1_F.BPP
+bins: 27
+duration: 0.876
+
+ instances/N1C1W1_G.BPP
+bins: 25
+duration: 0.921
+
+ instances/N1C1W1_H.BPP
+bins: 31
+duration: 0.698
+
+ instances/N1C1W1_I.BPP
+bins: 25
+duration: 1.302
+
+ instances/N1C1W1_J.BPP
+bins: 26
+duration: 1.143
+
+ instances/N1C1W1_K.BPP
+bins: 26
+duration: 1.19
+
+ instances/N1C1W1_L.BPP
+bins: 33
+duration: 0.516
+
+ instances/N1C1W1_M.BPP
+bins: 30
+duration: 0.852
+
+ instances/N1C1W1_N.BPP
+bins: 25
+duration: 1.819
+
+ instances/N1C1W1_O.BPP
+bins: 32
+duration: 0.504
+
+ instances/N1C1W1_P.BPP
+bins: 26
+duration: 0.834
+
+ instances/N1C1W1_Q.BPP
+bins: 28
+duration: 0.639
+
+ instances/N1C1W1_R.BPP
+bins: 25
+duration: 0.985
+
+ instances/N1C1W1_S.BPP
+bins: 28
+duration: 0.866
+
+ instances/N1C1W1_T.BPP
+bins: 28
+duration: 0.576
+
+ instances/N1C1W2_A.BPP
+bins: 29
+duration: 0.676
+
+ instances/N1C1W2_B.BPP
+bins: 30
+duration: 0.661
+
+ instances/N1C1W2_C.BPP
+bins: 33
+duration: 0.513
+
+ instances/N1C1W2_D.BPP
+bins: 31
+duration: 0.482
+
+ instances/N1C1W2_E.BPP
+bins: 36
+duration: 0.389
+
+ instances/N1C1W2_F.BPP
+bins: 30
+duration: 1.157
+
+ instances/N1C1W2_G.BPP
+bins: 30
+duration: 0.658
+
+ instances/N1C1W2_H.BPP
+bins: 33
+duration: 0.446
+
+ instances/N1C1W2_I.BPP
+bins: 35
+duration: 0.351
+
+ instances/N1C1W2_J.BPP
+bins: 34
+duration: 0.531
+
+ instances/N1C1W2_K.BPP
+bins: 35
+duration: 0.456
+
+ instances/N1C1W2_L.BPP
+bins: 31
+duration: 0.554
+
+ instances/N1C1W2_M.BPP
+bins: 30
+duration: 0.583
+
+ instances/N1C1W2_N.BPP
+bins: 33
+duration: 0.495
+
+ instances/N1C1W2_O.BPP
+bins: 29
+duration: 0.905
+
+ instances/N1C1W2_P.BPP
+bins: 33
+duration: 0.413
+
+ instances/N1C1W2_Q.BPP
+bins: 36
+duration: 0.436
+
+ instances/N1C1W2_R.BPP
+bins: 34
+duration: 0.338
+
+ instances/N1C1W2_S.BPP
+bins: 37
+duration: 0.401
+
+ instances/N1C1W2_T.BPP
+bins: 38
+duration: 0.33
+
+ instances/N1C1W4_A.BPP
+bins: 35
+duration: 0.417
+
+ instances/N1C1W4_B.BPP
+bins: 40
+duration: 0.318
+
+ instances/N1C1W4_C.BPP
+bins: 36
+duration: 0.662
+
+ instances/N1C1W4_D.BPP
+bins: 38
+duration: 0.349
+
+ instances/N1C1W4_E.BPP
+bins: 38
+duration: 0.355
+
+ instances/N1C1W4_F.BPP
+bins: 32
+duration: 0.414
+
+ instances/N1C1W4_G.BPP
+bins: 37
+duration: 0.447
+
+ instances/N1C1W4_H.BPP
+bins: 40
+duration: 0.285
+
+ instances/N1C1W4_I.BPP
+bins: 35
+duration: 0.411
+
+ instances/N1C1W4_J.BPP
+bins: 37
+duration: 0.367
+
+ instances/N1C1W4_K.BPP
+bins: 41
+duration: 0.282
+
+ instances/N1C1W4_L.BPP
+bins: 35
+duration: 0.432
+
+ instances/N1C1W4_M.BPP
+bins: 41
+duration: 0.276
+
+ instances/N1C1W4_N.BPP
+bins: 39
+duration: 0.302
+
+ instances/N1C1W4_O.BPP
+bins: 34
+duration: 0.468
+
+ instances/N1C1W4_P.BPP
+bins: 38
+duration: 0.319
+
+ instances/N1C1W4_Q.BPP
+bins: 34
+duration: 0.402
+
+ instances/N1C1W4_R.BPP
+bins: 38
+duration: 0.394
+
+ instances/N1C1W4_S.BPP
+bins: 36
+duration: 0.427
+
+ instances/N1C1W4_T.BPP
+bins: 42
+duration: 0.18
+
+ instances/N1C2W1_A.BPP
+bins: 21
+duration: 1.362
+
+ instances/N1C2W1_B.BPP
+bins: 26
+duration: 1.14
+
+ instances/N1C2W1_C.BPP
+bins: 23
+duration: 1.307
+
+ instances/N1C2W1_D.BPP
+bins: 21
+duration: 1.32
+
+ instances/N1C2W1_E.BPP
+bins: 17
+duration: 1.971
+
+ instances/N1C2W1_F.BPP
+bins: 22
+duration: 1.349
+
+ instances/N1C2W1_G.BPP
+bins: 21
+duration: 1.925
+
+ instances/N1C2W1_H.BPP
+bins: 23
+duration: 1.077
+
+ instances/N1C2W1_I.BPP
+bins: 27
+duration: 0.687
+
+ instances/N1C2W1_J.BPP
+bins: 27
+duration: 0.77
+
+ instances/N1C2W1_K.BPP
+bins: 24
+duration: 1.064
+
+ instances/N1C2W1_L.BPP
+bins: 25
+duration: 1.032
+
+ instances/N1C2W1_M.BPP
+bins: 26
+duration: 0.827
+
+ instances/N1C2W1_N.BPP
+bins: 21
+duration: 3.079
+
+ instances/N1C2W1_O.BPP
+bins: 15
+duration: 4.782
+
+ instances/N1C2W1_P.BPP
+bins: 21
+duration: 1.325
+
+ instances/N1C2W1_Q.BPP
+bins: 24
+duration: 1.261
+
+ instances/N1C2W1_R.BPP
+bins: 23
+duration: 1.347
+
+ instances/N1C2W1_S.BPP
+bins: 22
+duration: 1.922
+
+ instances/N1C2W1_T.BPP
+bins: 22
+duration: 1.325
+
+ instances/N1C2W2_A.BPP

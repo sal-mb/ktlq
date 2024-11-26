@@ -20,10 +20,6 @@ class Master {
   IloObjective objective;
   IloCplex solver;
 
-  // vectors to compute the branching faster
-  vector<int> sep_lambdas;
-  vector<int> join_lambdas;
-
   Master(const int& n = 0, const double& M = 1e6);
   ~Master();
   void solve();
