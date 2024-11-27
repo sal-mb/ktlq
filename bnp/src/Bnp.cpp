@@ -33,11 +33,13 @@ int Bnp::run(Data& data, const double& M, const int branching) {
     // Solving the master problem
     vector<double> solution = Bnp::solveMaster(data, M, node, rmp, columns);
 
-    // Getting the objective value for bin packing from the solution
-    int obj_value = computeSolution(*node, solution);
-
-    std::pair<int, int> best = getBestToSepJoin(*node, columns, solution, n);
-
+    int obj_value = 999999999;
+    if (!solution.empty()) {
+      // Getting the objective value for bin packing from the solution
+      obj_value = computeSolution(*node, solution);
+      cout << "text: " << obj_value << endl;
+      printVector(solution);
+    }
     if (obj_value < best_obj_value) {
 
       if (node->feasible) {
@@ -46,9 +48,10 @@ int Bnp::run(Data& data, const double& M, const int branching) {
 
       } else {
 
+        std::pair<int, int> best = getBestToSepJoin(*node, columns, solution, n);
         std::cout << best.first << ' ' << best.second << std::endl;
-        
-        if(!(best.first == 0 && best.second == 0)){
+
+        if (!(best.first == 0 && best.second == 0)) {
           // Branching separating items
           Node sep = (*node);
           sep.items.push_back(best);
@@ -90,8 +93,10 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
 
   // SepJoining the items in the master problem
   rmp.sepJoinItems(node->items, node->sep_join, node->columns, column_matrix);
+  rmp.solver = IloCplex(rmp.model);
+  rmp.solver.setOut(rmp.env.getNullStream());
   rmp.solve();
-
+  cout << rmp.solver.getStatus() << endl;
 #if DEBUG
   cout << "Initial lower bound: " << rmp.getObjValue() << endl;
   cout << "Initial solution: ";
@@ -102,6 +107,11 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
   int lambda_counter = n;
 
   while (true) {
+    if (rmp.solver.getStatus() != IloAlgorithm::Optimal) {
+      rmp.unSepJoinItems(node->items, node->sep_join);
+      getchar();
+      return {};
+    }
 
     // Get the dual variables
     IloNumArray pi = rmp.getDuals();
@@ -129,12 +139,12 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
 
       // Adding the generated column to the column matrix
       column_matrix.push_back(bool_col);
-      node->columns.push_back(column_matrix.size()-1);
+      node->columns.push_back(column_matrix.size() - 1);
 
 #if DEBUG
       pricing_problem.printSolution();
 #endif // DEBUG
-      
+
       rmp.addNewLambda(entering_col, ++lambda_counter);
 
       rmp.solve();

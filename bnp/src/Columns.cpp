@@ -34,7 +34,7 @@ std::pair<int, int> getBestToSepJoin(Node& node, const vector<vector<bool>>& col
   for (int i = 0; i < n; i++) {
     for (int j = i + 1; j < n; j++) {
 
-      if (std::abs(z_ij[i][j] - 0.5) <= best_z) {
+      if (std::abs(z_ij[i][j] - 0.5) < best_z) {
 
         best_z = std::abs(z_ij[i][j] - 0.5);
         best.first = i;
@@ -54,9 +54,14 @@ int computeSolution(Node& node, const vector<double>& solution) {
 
   double obj_value = 0;
 
+  node.feasible = true;
+
   for (auto k : solution) {
     if (k > 0) {
       obj_value += k;
+      if(k < 1-0.0001){
+        node.feasible = false;
+      }
     }
   }
 
