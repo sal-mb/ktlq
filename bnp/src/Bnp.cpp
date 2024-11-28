@@ -34,6 +34,7 @@ int Bnp::run(Data& data, const double& M, const int branching) {
     vector<double> solution = Bnp::solveMaster(data, M, node, rmp, columns);
 
     int obj_value = 999999999;
+    std::pair<int, int> best = { 0, 0 };
     if (!solution.empty()) {
       // Getting the objective value for bin packing from the solution
       obj_value = computeSolution(*node, solution);
@@ -48,7 +49,7 @@ int Bnp::run(Data& data, const double& M, const int branching) {
 
       } else {
 
-        std::pair<int, int> best = getBestToSepJoin(*node, columns, solution, n);
+        best = getBestToSepJoin(*node, columns, solution, n);
         std::cout << best.first << ' ' << best.second << std::endl;
 
         if (!(best.first == 0 && best.second == 0)) {
@@ -93,10 +94,13 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
 
   // SepJoining the items in the master problem
   rmp.sepJoinItems(node->items, node->sep_join, node->columns, column_matrix);
+  rmp.solver.clear();
+  rmp.solver.end();
   rmp.solver = IloCplex(rmp.model);
   rmp.solver.setOut(rmp.env.getNullStream());
+  rmp.solver.setParam(rmp.solver.RootAlg, IloCplex::Network);
   rmp.solve();
-  cout << rmp.solver.getStatus() << endl;
+  cout << rmp.solver.getStatus()  << " b" << endl;
 #if DEBUG
   cout << "Initial lower bound: " << rmp.getObjValue() << endl;
   cout << "Initial solution: ";
@@ -109,7 +113,6 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
   while (true) {
     if (rmp.solver.getStatus() != IloAlgorithm::Optimal) {
       rmp.unSepJoinItems(node->items, node->sep_join);
-      getchar();
       return {};
     }
 
@@ -127,13 +130,18 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
     pricing_problem.sepJoinItems(node->items, node->sep_join);
     pricing_problem.solve();
     // ----------------------------------------------------------------------
+    
+    if(pricing_problem.solver.getStatus() != IloAlgorithm::Optimal){
+      rmp.unSepJoinItems(node->items, node->sep_join);
+      return {};
+    }
 
     if (pricing_problem.getObjValue() < -1e-5) {
 
 #if DEBUG
       cout << "Reduced cost is equal to " << pricing_problem.getObjValue() << ", which is less than 0..." << endl;
 #endif // DEBUG
-
+      //
       IloNumArray entering_col = pricing_problem.getColumn();
       vector<bool> bool_col = pricing_problem.getBoolColumn();
 
