@@ -30,25 +30,29 @@ int Bnp::run(Data& data, const double& M, const int branching) {
     // Getting the branching node
     auto node = branching ? tree.begin() : std::prev(tree.end()); // 0 - dfs, 1 - bfs;
 
+    node->lb = 9999;
+
     // Solving the master problem
     vector<double> solution = Bnp::solveMaster(data, M, node, rmp, columns);
 
-    int obj_value = 999999999;
     std::pair<int, int> best = { 0, 0 };
-    if (rmp.solver.getStatus() != IloAlgorithm::Infeasible) {
-      // Getting the objective value for bin packing from the solution
-      obj_value = computeSolution(*node, solution);
-      cout << "text: " << obj_value << endl;
+
+    if (!solution.empty()) {
+      // If the column generation occurred without infeasible solutions 
+      // Get the best pair to sep join
+      best = getBestToSepJoin(*node, columns, solution, n);
+      cout << "sol: " << node->lb << endl;
+      cout << "best: " << best_obj_value << endl;
     }
-    if (obj_value < best_obj_value) {
+
+    if (node->lb - best_obj_value <= -0.0001) {
 
       if (node->feasible) {
-        best_obj_value = obj_value;
+        best_obj_value = node->lb;
         cout << "best: " << best_obj_value << endl;
 
       } else {
 
-        best = getBestToSepJoin(*node, columns, solution, n);
         std::cout << best.first << ' ' << best.second << std::endl;
 
         if (!(best.first == 0 && best.second == 0)) {
@@ -88,10 +92,16 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
   int capacity = data.getBinCapacity();
 
   // SepJoining the items in the master problem
-  rmp.sepJoinItems(node->items, node->sep_join,column_matrix);
+  rmp.sepJoinItems(node->items, node->sep_join, column_matrix);
   rmp.solve();
 
   while (true) {
+
+    if (rmp.solver.getStatus() != IloAlgorithm::Optimal) {
+      rmp.unSepJoinItems(node->items, node->sep_join);
+      cout << "UNOPTIMAL" << endl;
+      return {};
+    }
 
     // Get the dual variables
     IloNumArray pi = rmp.getDuals();
@@ -101,7 +111,12 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
     pricing_problem.sepJoinItems(node->items, node->sep_join);
     pricing_problem.solve();
     // ----------------------------------------------------------------------
-    
+
+    if (pricing_problem.solver.getStatus() != IloAlgorithm::Optimal) {
+      rmp.unSepJoinItems(node->items, node->sep_join);
+      cout << "UNOPTIMAL" << endl;
+      return {};
+    }
     if (pricing_problem.getObjValue() < -1e-5) {
 
       IloNumArray entering_col = pricing_problem.getColumn();
@@ -118,6 +133,9 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
       break;
     }
   }
+  
+  // Getting the objective value from the best solution
+  node->lb = std::ceil(rmp.getObjValue() - 0.0001);
 
   // Gets the lambda values from the model
   vector<double> lambda = rmp.getSolution();
