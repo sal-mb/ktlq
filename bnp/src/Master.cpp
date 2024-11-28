@@ -44,30 +44,26 @@ Master::~Master() {
   cout << "Master destroyed" << endl;
 }
 
-void Master::addNewLambda(const IloNumArray& entering_col,
-  const int lambda_index) {
-  char var_name[50];
-  sprintf(var_name, "y%d", lambda_index);
+void Master::addNewLambda(const IloNumArray& entering_col) {
 
   IloNumVar new_lambda(this->objective(1) + constraints(entering_col), 0,
     IloInfinity);
-  new_lambda.setName(var_name);
 
   this->lambda.add(new_lambda);
 }
 
-void Master::sepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<int> &columns, const vector<vector<bool>>& column_matrix) {
+void Master::sepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<vector<bool>>& column_matrix) {
   for (int i = 0; i < items.size(); i++) {
     // Joining the pair items[i]
     if (sep_join[i]) {
-      for (auto k : columns) {
+      for (int k = n; k < column_matrix.size(); k++) {
         if (column_matrix[k][items[i].first] != column_matrix[k][items[i].second]) {
           this->lambda[k].setUB(0);
         }
       }
     } else {
       // Separatings the pair items[i]
-      for (auto k : columns) {
+      for (int k = n; k < column_matrix.size(); k++) {
         // Setting the lambda UB = 0 so they cant be together
         if (column_matrix[k][items[i].first] == true && column_matrix[k][items[i].second] == true) {
           this->lambda[k].setUB(0);
@@ -79,7 +75,7 @@ void Master::sepJoinItems(const vector<std::pair<int, int>>& items, const vector
 
 void Master::unSepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join) {
 
-  for(int i = 0; i < lambda.getSize(); i++){
+  for (int i = 0; i < lambda.getSize(); i++) {
     lambda[i].setUB(IloInfinity);
   }
 }

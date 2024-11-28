@@ -24,10 +24,10 @@ class Master {
   ~Master();
   void solve();
   IloNumArray getDuals();
-  void addNewLambda(const IloNumArray& entering_col, const int lambda_index);
+  void addNewLambda(const IloNumArray& entering_col);
   void printSolution();
   std::vector<double> getSolution();
-void sepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<int> &columns, const vector<vector<bool>>& column_matrix);
+void sepJoinItems(const vector<std::pair<int, int>>& items, const vector<bool>& sep_join, const vector<vector<bool>>& column_matrix);
   void unSepJoinItems(const vector<std::pair<int, int>> &items, const vector<bool> &sep_join);
   double getObjValue();
 };

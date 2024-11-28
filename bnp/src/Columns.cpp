@@ -4,7 +4,6 @@ vector<vector<bool>> initColumns(const int n, Node& node) {
   vector<vector<bool>> columns(n, vector<bool>(n));
 
   for (int i = 0; i < n; i++) {
-    node.columns.push_back(i);
     columns[i][i] = 1;
   }
   return columns;
@@ -22,7 +21,7 @@ std::pair<int, int> getBestToSepJoin(Node& node, const vector<vector<bool>>& col
 
     for (int j = i + 1; j < n; j++) {
 
-      for (auto k : node.columns) {
+      for (int k = n; k < columns.size(); k++) {
         if (columns[k][i] == true && columns[k][j] == true) {
 
           z_ij[i][j] += lambda[k];

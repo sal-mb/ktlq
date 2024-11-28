@@ -35,11 +35,10 @@ int Bnp::run(Data& data, const double& M, const int branching) {
 
     int obj_value = 999999999;
     std::pair<int, int> best = { 0, 0 };
-    if (!solution.empty()) {
+    if (rmp.solver.getStatus() != IloAlgorithm::Infeasible) {
       // Getting the objective value for bin packing from the solution
       obj_value = computeSolution(*node, solution);
       cout << "text: " << obj_value << endl;
-      printVector(solution);
     }
     if (obj_value < best_obj_value) {
 
@@ -88,42 +87,14 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
   vector<int> weights = data.getWeights();
   int capacity = data.getBinCapacity();
 
-#if DEBUG
-  cout << "Separating and or Joining Items... " << endl;
-#endif // DEBUG
-
   // SepJoining the items in the master problem
-  rmp.sepJoinItems(node->items, node->sep_join, node->columns, column_matrix);
-  rmp.solver.clear();
-  rmp.solver.end();
-  rmp.solver = IloCplex(rmp.model);
-  rmp.solver.setOut(rmp.env.getNullStream());
-  rmp.solver.setParam(rmp.solver.RootAlg, IloCplex::Network);
+  rmp.sepJoinItems(node->items, node->sep_join,column_matrix);
   rmp.solve();
-  cout << rmp.solver.getStatus()  << " b" << endl;
-#if DEBUG
-  cout << "Initial lower bound: " << rmp.getObjValue() << endl;
-  cout << "Initial solution: ";
-  rmp.printSolution();
-  cout << endl;
-#endif // DEBUG
-
-  int lambda_counter = n;
 
   while (true) {
-    if (rmp.solver.getStatus() != IloAlgorithm::Optimal) {
-      rmp.unSepJoinItems(node->items, node->sep_join);
-      return {};
-    }
 
     // Get the dual variables
     IloNumArray pi = rmp.getDuals();
-
-#if DEBUG
-    for (size_t i = 0; i < n; i++) {
-      cout << "Dual variable of constraint " << i << " = " << pi[i] << endl;
-    }
-#endif // DEBUG
 
     // Build and solve the pricing problem
     Pricing pricing_problem(n, weights, pi, capacity);
@@ -131,29 +102,15 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
     pricing_problem.solve();
     // ----------------------------------------------------------------------
     
-    if(pricing_problem.solver.getStatus() != IloAlgorithm::Optimal){
-      rmp.unSepJoinItems(node->items, node->sep_join);
-      return {};
-    }
-
     if (pricing_problem.getObjValue() < -1e-5) {
 
-#if DEBUG
-      cout << "Reduced cost is equal to " << pricing_problem.getObjValue() << ", which is less than 0..." << endl;
-#endif // DEBUG
-      //
       IloNumArray entering_col = pricing_problem.getColumn();
       vector<bool> bool_col = pricing_problem.getBoolColumn();
 
       // Adding the generated column to the column matrix
       column_matrix.push_back(bool_col);
-      node->columns.push_back(column_matrix.size() - 1);
 
-#if DEBUG
-      pricing_problem.printSolution();
-#endif // DEBUG
-
-      rmp.addNewLambda(entering_col, ++lambda_counter);
+      rmp.addNewLambda(entering_col);
 
       rmp.solve();
 
