@@ -36,11 +36,13 @@ int Bnp::run(Data& data, const double& M, const int branching) {
         // Solving the master problem
         if (node->root) {
             solution = Bnp::solveMasterRoot(data, M, node, rmp, columns);
+            cout << "sol_root: " << node->lb << endl;
+            getchar();
         } else {
             solution = Bnp::solveMaster(data, M, node, rmp, columns);
         }
         std::pair<int, int> best = { 0, 0 };
-        
+
         node->root = false;
 
         if (!solution.empty()) {
@@ -55,7 +57,7 @@ int Bnp::run(Data& data, const double& M, const int branching) {
 
             if (node->feasible) {
                 best_obj_value = node->lb;
-                //cout << "best: " << best_obj_value << endl;
+                // cout << "best: " << best_obj_value << endl;
 
             } else {
 
@@ -82,7 +84,7 @@ int Bnp::run(Data& data, const double& M, const int branching) {
                 }
             }
         }
-
+        getchar();
         tree.erase(node);
         std::cout << "tree size: " << tree.size() << std::endl;
     }
@@ -151,6 +153,7 @@ vector<double> Bnp::solveMaster(Data& data, const double& M, const std::list<Nod
 
     return lambda;
 }
+
 vector<double> Bnp::solveMasterRoot(Data& data, const double& M, const std::list<Node>::iterator& node, Master& rmp, vector<vector<bool>>& column_matrix) {
 
     int n = data.getNItems();
@@ -179,16 +182,14 @@ vector<double> Bnp::solveMasterRoot(Data& data, const double& M, const std::list
             items[i] = { kkk, weights[i], false, i };
             // cout << "[" << i << "]: " << kkk << " ";
         }
-        //cout << endl;
+        // cout << endl;
 
         stype lower_bound = 0; // Initial lower bound
         stype upper_bound = n * 1e12; // Very large upper bound
 
         // Call the combo function
-        stype result = combo(items, items + n - 1, capacity, lower_bound, upper_bound, true, false) * 1e-6;
-        // cout << "result: " << result;
-
-        if (1 - result < -1e-5) {
+        stype result = combo(items, items + n - 1, capacity, lower_bound, upper_bound, true, false);
+        if (1 - (double)result / 1e6 < -1e-5) {
 
             IloNumArray entering_col(rmp.env, n);
             vector<bool> bool_col(n);
@@ -204,7 +205,7 @@ vector<double> Bnp::solveMasterRoot(Data& data, const double& M, const std::list
                     entering_col[items[i].index] = 0;
                     bool_col[items[i].index] = false;
                 }
-                //cout << entering_col[i] << " ";
+                // cout << entering_col[i] << " ";
             }
 
             column_matrix.push_back(bool_col);
