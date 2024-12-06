@@ -20,7 +20,7 @@ public:
 
   int getItemWeight(unsigned int item);
 
-  std::vector<int> getWeights();
+  const std::vector<int>& getWeights();
 };
 
 #endif

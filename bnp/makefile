@@ -17,23 +17,23 @@ SRCS := $(shell find -L $(SRCDIR) -name '*.cpp')
 OBJS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 
 
-# #Cplex version without dot notation
-# CPLEX_VERSION := 2211
-#
-# #Cplex Folders
-# CPLEXFOLDER := /opt/ibm/ILOG/CPLEX_Studio$(CPLEX_VERSION)
-# CPLEXDIR  := $(CPLEXFOLDER)/cplex
-# CONCERTDIR := $(CPLEXFOLDER)/concert
-#
-# CPLEXLIBDIR := $(CPLEXDIR)/lib/x86-64_linux/static_pic
-# CONCERTLIBDIR := $(CONCERTDIR)/lib/x86-64_linux/static_pic
-#
-# CONCERTINCDIR := $(CONCERTDIR)/include
-# CPLEXINCDIR := $(CPLEXDIR)/include
-#
-# CPPCFLAGS += -I$(CPLEXINCDIR) -I$(CONCERTINCDIR)
-# CPPCLNFLAGS += -L$(CPLEXLIBDIR) -lilocplex -lcplex -L$(CONCERTLIBDIR) -lconcert -lm -lpthread -ldl
-CPPCLNFLAGS +=-lilocplex -lcplex -lconcert -lm -lpthread -ldl
+#Cplex version without dot notation
+CPLEX_VERSION := 2211
+
+#Cplex Folders
+CPLEXFOLDER := /opt/ibm/ILOG/CPLEX_Studio$(CPLEX_VERSION)
+CPLEXDIR  := $(CPLEXFOLDER)/cplex
+CONCERTDIR := $(CPLEXFOLDER)/concert
+
+CPLEXLIBDIR := $(CPLEXDIR)/lib/x86-64_linux/static_pic
+CONCERTLIBDIR := $(CONCERTDIR)/lib/x86-64_linux/static_pic
+
+CONCERTINCDIR := $(CONCERTDIR)/include
+CPLEXINCDIR := $(CPLEXDIR)/include
+
+CPPCFLAGS += -I$(CPLEXINCDIR) -I$(CONCERTINCDIR)
+CPPCLNFLAGS += -L$(CPLEXLIBDIR) -lilocplex -lcplex -L$(CONCERTLIBDIR) -lconcert -lm -lpthread -ldl
+# CPPCLNFLAGS +=-lilocplex -lcplex -lconcert -lm -lpthread -ldl
 
 
 ifeq ($(DEBUG), 1)
